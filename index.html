@@ -2098,6 +2098,13 @@
                 </svg>
                 Sync Code
             </button>
+            <button class="icon-btn" onclick="testFirebase()" title="Test Firebase Connection" style="background: #f59e0b; border-color: #d97706;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Test
+            </button>
             <button class="btn-wipe" onclick="wipeData()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -3331,15 +3338,17 @@
                             updateSyncStatus('synced');
                         })
                         .catch((err) => {
-                            console.error('Auth error:', err);
-                            userId = localStorage.getItem('userId') || 'offline_' + Date.now();
+                            console.error('❌ FIREBASE AUTH FAILED:', err);
+                            console.error('Error code:', err.code);
+                            console.error('Error message:', err.message);
+                            alert('FIREBASE AUTH FAILED: ' + err.message + '\n\nCheck console for details.');
                             updateSyncStatus('offline');
                         });
                 }
             });
         } catch (error) {
-            console.error('Firebase initialization error:', error);
-            userId = 'offline_' + Date.now();
+            console.error('❌ FIREBASE INITIALIZATION FAILED:', error);
+            alert('FIREBASE INIT FAILED: ' + error.message);
             updateSyncStatus('offline');
         }
 
@@ -3424,45 +3433,58 @@ The app is in offline mode because Firebase can't write data. This is usually be
         // Setup real-time sync
         async function setupRealtimeSync() {
             if (!firestoreDb || !userId) {
-                console.error('Cannot setup sync: missing firestore or userId');
+                console.error('❌ Cannot setup sync: missing firestore or userId');
                 return;
             }
             
-            console.log('Setting up real-time sync for user:', userId);
+            console.log('🔄 Setting up real-time sync for user:', userId);
+            console.log('📍 Firestore path: users/' + userId + '/pairs');
             
             try {
                 // INITIAL LOAD - Fetch existing data first
-                console.log('Fetching initial data...');
+                console.log('📥 Fetching initial data from Firestore...');
                 
+                console.log('Fetching pairs...');
                 const pairsSnapshot = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
                 pairs = pairsSnapshot.docs.map(doc => ({ 
                     id: parseInt(doc.id), 
                     ...doc.data() 
                 }));
-                console.log('Initial pairs loaded:', pairs.length);
+                console.log('✅ Initial pairs loaded:', pairs.length, 'documents');
+                if (pairs.length > 0) {
+                    console.log('First pair:', pairs[0]);
+                }
                 renderPairs();
                 
+                console.log('Fetching trades...');
                 const tradesSnapshot = await firestoreDb.collection('users').doc(userId).collection('trades').get();
                 trades = tradesSnapshot.docs.map(doc => ({ 
                     id: parseInt(doc.id), 
                     ...doc.data() 
                 }));
-                console.log('Initial trades loaded:', trades.length);
+                console.log('✅ Initial trades loaded:', trades.length, 'documents');
                 renderJournalStats();
                 renderCalendar();
                 
+                console.log('Fetching confluence...');
                 const confluenceSnapshot = await firestoreDb.collection('users').doc(userId).collection('confluence').get();
                 confluenceReadings = confluenceSnapshot.docs.map(doc => ({ 
                     id: parseInt(doc.id), 
                     ...doc.data() 
                 }));
-                console.log('Initial confluence loaded:', confluenceReadings.length);
+                console.log('✅ Initial confluence loaded:', confluenceReadings.length, 'documents');
                 renderSavedReadings();
                 
                 updateSyncStatus('synced');
+                console.log('✅ Initial data load complete');
                 
             } catch (error) {
-                console.error('Error loading initial data:', error);
+                console.error('❌ INITIAL DATA LOAD FAILED:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                if (error.code === 'permission-denied') {
+                    alert('FIRESTORE PERMISSION DENIED!\n\nYour Firestore security rules are blocking reads.\n\nGo to Firebase Console > Firestore > Rules and publish the correct rules.');
+                }
                 updateSyncStatus('offline');
             }
             
@@ -3908,13 +3930,23 @@ The app is in offline mode because Firebase can't write data. This is usually be
 
         // Save pair to Firestore
         async function savePair(pair) {
-            if (!firestoreDb || !userId) return;
+            console.log('💾 Attempting to save pair:', pair.symbol, 'userId:', userId);
+            if (!firestoreDb || !userId) {
+                console.error('❌ Cannot save: firestoreDb or userId missing');
+                return;
+            }
             try {
                 updateSyncStatus('syncing');
+                console.log('📤 Writing to Firestore path:', `users/${userId}/pairs/${pair.id}`);
                 await firestoreDb.collection('users').doc(userId).collection('pairs')
                     .doc(pair.id.toString()).set(pair);
+                console.log('✅ Pair saved successfully');
                 updateSyncStatus('synced');
             } catch (error) {
+                console.error('❌ SAVE FAILED:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                alert('SAVE FAILED: ' + error.message + '\n\nThis usually means Firestore rules are blocking writes.');
                 updateSyncStatus('offline');
             }
         }
@@ -4516,10 +4548,6 @@ The app is in offline mode because Firebase can't write data. This is usually be
         // ========== TRADING JOURNAL FUNCTIONS ==========
 
         // Load trades (handled by real-time listeners)
-        async function loadTrades() {
-            return Promise.resolve();
-        }
-
         // Save trade to Firestore
         async function saveTrade(trade) {
             if (!firestoreDb || !userId) return;
@@ -4873,6 +4901,91 @@ The app is in offline mode because Firebase can't write data. This is usually be
                     showMessage('Error wiping data', 'error');
                 }
             }
+        }
+
+        // ========== FIREBASE TEST FUNCTION ==========
+
+        async function testFirebase() {
+            console.clear();
+            console.log('🧪 ===== FIREBASE CONNECTION TEST =====\n');
+            
+            const results = [];
+            
+            // Test 1: Check if Firebase is loaded
+            console.log('Test 1: Firebase SDK loaded?');
+            if (typeof firebase === 'undefined') {
+                console.error('❌ FAIL: Firebase SDK not loaded');
+                results.push('❌ Firebase SDK missing');
+            } else {
+                console.log('✅ PASS: Firebase SDK loaded');
+                results.push('✅ Firebase SDK loaded');
+            }
+            
+            // Test 2: Check initialization
+            console.log('\nTest 2: Firebase initialized?');
+            if (!firestoreDb || !auth) {
+                console.error('❌ FAIL: Firebase not initialized');
+                results.push('❌ Firebase not initialized');
+            } else {
+                console.log('✅ PASS: Firebase initialized');
+                results.push('✅ Firebase initialized');
+            }
+            
+            // Test 3: Check authentication
+            console.log('\nTest 3: User authenticated?');
+            if (!userId || userId.startsWith('offline_')) {
+                console.error('❌ FAIL: Not authenticated (userId:', userId + ')');
+                results.push('❌ Not authenticated');
+            } else {
+                console.log('✅ PASS: Authenticated as', userId);
+                results.push('✅ Authenticated: ' + userId.substring(0, 8) + '...');
+            }
+            
+            // Test 4: Try to write data
+            console.log('\nTest 4: Can write to Firestore?');
+            try {
+                const testDoc = {
+                    test: true,
+                    timestamp: new Date().toISOString()
+                };
+                await firestoreDb.collection('users').doc(userId).collection('_test').doc('test').set(testDoc);
+                console.log('✅ PASS: Write successful');
+                results.push('✅ Can write to Firestore');
+                
+                // Clean up
+                await firestoreDb.collection('users').doc(userId).collection('_test').doc('test').delete();
+            } catch (error) {
+                console.error('❌ FAIL: Write failed');
+                console.error('Error:', error.code, '-', error.message);
+                results.push('❌ Write FAILED: ' + error.code);
+                
+                if (error.code === 'permission-denied') {
+                    results.push('');
+                    results.push('⚠️  FIRESTORE RULES ARE BLOCKING WRITES!');
+                }
+            }
+            
+            // Test 5: Try to read data
+            console.log('\nTest 5: Can read from Firestore?');
+            try {
+                const snapshot = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
+                console.log('✅ PASS: Read successful (' + snapshot.size + ' documents)');
+                results.push('✅ Can read from Firestore (' + snapshot.size + ' docs)');
+            } catch (error) {
+                console.error('❌ FAIL: Read failed');
+                console.error('Error:', error.code, '-', error.message);
+                results.push('❌ Read FAILED: ' + error.code);
+                
+                if (error.code === 'permission-denied') {
+                    results.push('');
+                    results.push('⚠️  FIRESTORE RULES ARE BLOCKING READS!');
+                }
+            }
+            
+            console.log('\n🧪 ===== TEST COMPLETE =====');
+            
+            // Show results in alert
+            alert('FIREBASE CONNECTION TEST\n\n' + results.join('\n') + '\n\nSee console for details (F12)');
         }
 
         // ========== SYNC CODE FUNCTIONS ==========
