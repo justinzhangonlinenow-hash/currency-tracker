@@ -2092,6 +2092,12 @@
                 Import
             </button>
             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+            <button class="icon-btn" onclick="showSyncCode()" title="Sync Across Devices">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v6m0 4v10M6 8l6-6 6 6M6 16l6 6 6-6"></path>
+                </svg>
+                Sync Code
+            </button>
             <button class="btn-wipe" onclick="wipeData()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -3248,6 +3254,21 @@
         // REPLACE WITH YOUR FIREBASE CONFIG (get from Firebase Console)
         // ============================================================
         // FIREBASE CLOUD SYNC - Configured and Ready
+        // 
+        // IMPORTANT: Update Firestore Security Rules to allow the syncCodes collection:
+        // Go to Firebase Console > Firestore > Rules and add:
+        //
+        // rules_version = '2';
+        // service cloud.firestore {
+        //   match /databases/{database}/documents {
+        //     match /users/{userId}/{document=**} {
+        //       allow read, write: if true;
+        //     }
+        //     match /syncCodes/{code} {
+        //       allow read, write: if true;
+        //     }
+        //   }
+        // }
         // ============================================================
         
         const firebaseConfig = {
@@ -3271,18 +3292,31 @@
             firestoreDb.enablePersistence({ synchronizeTabs: true })
                 .catch(() => {});
             
-            auth.signInAnonymously()
-                .then(cred => {
-                    userId = cred.user.uid;
+            // Firebase Auth automatically persists anonymous auth across page reloads
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // User is already signed in (persisted across reloads)
+                    userId = user.uid;
                     localStorage.setItem('userId', userId);
                     isOnline = true;
                     setupRealtimeSync();
                     updateSyncStatus('synced');
-                })
-                .catch(() => {
-                    userId = localStorage.getItem('userId') || 'offline_' + Date.now();
-                    updateSyncStatus('offline');
-                });
+                } else {
+                    // No user signed in, create new anonymous user
+                    auth.signInAnonymously()
+                        .then(cred => {
+                            userId = cred.user.uid;
+                            localStorage.setItem('userId', userId);
+                            isOnline = true;
+                            setupRealtimeSync();
+                            updateSyncStatus('synced');
+                        })
+                        .catch(() => {
+                            userId = localStorage.getItem('userId') || 'offline_' + Date.now();
+                            updateSyncStatus('offline');
+                        });
+                }
+            });
         } catch (error) {
             userId = 'offline_' + Date.now();
             updateSyncStatus('offline');
@@ -4692,6 +4726,103 @@
                 } catch (error) {
                     showMessage('Error wiping data', 'error');
                 }
+            }
+        }
+
+        // ========== SYNC CODE FUNCTIONS ==========
+
+        async function showSyncCode() {
+            if (!userId || !firestoreDb) {
+                showMessage('Not connected. Please check your internet connection.', 'error');
+                return;
+            }
+            
+            try {
+                // Get or create a sync code for this user
+                const userDoc = await firestoreDb.collection('users').doc(userId).get();
+                let syncCode;
+                
+                if (userDoc.exists && userDoc.data().syncCode) {
+                    syncCode = userDoc.data().syncCode;
+                } else {
+                    // Generate a new 6-character sync code
+                    syncCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                    await firestoreDb.collection('users').doc(userId).set({ syncCode }, { merge: true });
+                    
+                    // Store mapping from sync code to userId
+                    await firestoreDb.collection('syncCodes').doc(syncCode).set({ 
+                        userId: userId,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                
+                const message = `🔐 YOUR SYNC CODE: ${syncCode}
+
+TO SYNC TO ANOTHER DEVICE:
+1. Open this app on your other device
+2. Click "Sync Code" → "Enter Code"
+3. Enter: ${syncCode}
+4. Your data will sync!
+
+⚠️ Keep this code private!`;
+                
+                if (confirm(message + '\n\nClick OK to copy code, or Cancel to enter a different code.')) {
+                    navigator.clipboard.writeText(syncCode).then(() => {
+                        showMessage(`✓ Code "${syncCode}" copied to clipboard!`);
+                    }).catch(() => {
+                        prompt('Copy your sync code:', syncCode);
+                    });
+                } else {
+                    enterSyncCode();
+                }
+            } catch (error) {
+                console.error('Error generating sync code:', error);
+                showMessage('Error creating sync code', 'error');
+            }
+        }
+
+        async function enterSyncCode() {
+            const code = prompt('🔐 Enter sync code from your other device:\n\n(6-character code, like ABC123)');
+            
+            if (!code || !code.trim()) return;
+            
+            const syncCode = code.trim().toUpperCase();
+            
+            if (syncCode.length !== 6) {
+                showMessage('Invalid code format. Code should be 6 characters.', 'error');
+                return;
+            }
+            
+            if (!confirm('⚠️ This will sync data from the device with code "' + syncCode + '". Continue?')) {
+                return;
+            }
+            
+            try {
+                updateSyncStatus('syncing');
+                
+                // Look up the userId for this sync code
+                const codeDoc = await firestoreDb.collection('syncCodes').doc(syncCode).get();
+                
+                if (!codeDoc.exists) {
+                    showMessage('Invalid sync code. Please check and try again.', 'error');
+                    updateSyncStatus('offline');
+                    return;
+                }
+                
+                const targetUserId = codeDoc.data().userId;
+                
+                // Store the new userId and reload
+                userId = targetUserId;
+                localStorage.setItem('userId', userId);
+                
+                showMessage('✓ Syncing with code ' + syncCode + '...');
+                
+                // Reload to reconnect with new userId
+                setTimeout(() => location.reload(), 1000);
+            } catch (error) {
+                console.error('Error applying sync code:', error);
+                showMessage('Error applying sync code. Please try again.', 'error');
+                updateSyncStatus('offline');
             }
         }
 
