@@ -2112,6 +2112,14 @@
         </div>
     </header>
 
+    <!-- Offline Warning Banner -->
+    <div id="offlineWarning" style="display: none; background: #dc2626; color: white; padding: 1rem 2rem; text-align: center; font-weight: 600; border-bottom: 2px solid #991b1b;">
+        ⚠️ OFFLINE MODE: Data will NOT sync across devices. Your data is only saved locally.
+        <button onclick="showFixInstructions()" style="margin-left: 1rem; padding: 0.5rem 1rem; background: white; color: #dc2626; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">
+            FIX THIS
+        </button>
+    </div>
+
     <div class="container">
         <!-- Active Pairs Counter -->
         <div class="active-pairs">
@@ -3283,6 +3291,7 @@
         // Firebase initialization
         let app, firestoreDb, auth, userId;
         let isOnline = false;
+        let syncListenersActive = false;
         
         try {
             app = firebase.initializeApp(firebaseConfig);
@@ -3296,28 +3305,40 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     // User is already signed in (persisted across reloads)
+                    console.log('✓ Authenticated user:', user.uid);
                     userId = user.uid;
                     localStorage.setItem('userId', userId);
                     isOnline = true;
-                    setupRealtimeSync();
+                    
+                    // Only setup listeners once
+                    if (!syncListenersActive) {
+                        setupRealtimeSync();
+                        syncListenersActive = true;
+                    }
+                    
                     updateSyncStatus('synced');
                 } else {
                     // No user signed in, create new anonymous user
+                    console.log('Creating new anonymous user...');
                     auth.signInAnonymously()
                         .then(cred => {
+                            console.log('✓ New anonymous user created:', cred.user.uid);
                             userId = cred.user.uid;
                             localStorage.setItem('userId', userId);
                             isOnline = true;
-                            setupRealtimeSync();
+                            
+                            // Setup sync will be triggered by onAuthStateChanged callback
                             updateSyncStatus('synced');
                         })
-                        .catch(() => {
+                        .catch((err) => {
+                            console.error('Auth error:', err);
                             userId = localStorage.getItem('userId') || 'offline_' + Date.now();
                             updateSyncStatus('offline');
                         });
                 }
             });
         } catch (error) {
+            console.error('Firebase initialization error:', error);
             userId = 'offline_' + Date.now();
             updateSyncStatus('offline');
         }
@@ -3332,6 +3353,7 @@
             const indicator = document.getElementById('syncIndicator');
             const dot = document.getElementById('syncDot');
             const text = document.getElementById('syncStatus');
+            const offlineWarning = document.getElementById('offlineWarning');
             
             if (!indicator) return;
             
@@ -3341,24 +3363,77 @@
             if (status === 'synced') {
                 text.textContent = 'SYNCED';
                 isOnline = true;
+                if (offlineWarning) offlineWarning.style.display = 'none';
             } else if (status === 'syncing') {
                 indicator.classList.add('syncing');
                 dot.classList.add('syncing');
                 text.textContent = 'SYNCING...';
+                if (offlineWarning) offlineWarning.style.display = 'none';
             } else {
                 indicator.classList.add('offline');
                 dot.classList.add('offline');
                 text.textContent = 'OFFLINE';
                 isOnline = false;
+                
+                // Show offline warning if userId is offline
+                if (offlineWarning && userId && userId.startsWith('offline_')) {
+                    offlineWarning.style.display = 'block';
+                }
             }
+        }
+
+        // Show instructions for fixing offline mode
+        function showFixInstructions() {
+            const instructions = `🔧 TO FIX OFFLINE MODE:
+
+1. Go to Firebase Console:
+   https://console.firebase.google.com/
+
+2. Select your project: currency-tracker-7ede6
+
+3. Click "Firestore Database" in sidebar
+
+4. Click "Rules" tab at the top
+
+5. Replace the rules with:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if true;
+    }
+    match /syncCodes/{code} {
+      allow read, write: if true;
+    }
+  }
+}
+
+6. Click "Publish"
+
+7. Refresh this page
+
+The app is in offline mode because Firebase can't write data. This is usually because:
+- Firestore security rules not set (most common)
+- No internet connection
+- Firebase project issues`;
+
+            alert(instructions);
         }
         
         // Setup real-time sync
         function setupRealtimeSync() {
-            if (!firestoreDb || !userId) return;
+            if (!firestoreDb || !userId) {
+                console.error('Cannot setup sync: missing firestore or userId');
+                return;
+            }
             
+            console.log('Setting up real-time sync for user:', userId);
+            
+            // Listen to pairs collection
             firestoreDb.collection('users').doc(userId).collection('pairs')
                 .onSnapshot(snapshot => {
+                    console.log('Pairs updated:', snapshot.size, 'documents');
                     updateSyncStatus('syncing');
                     pairs = snapshot.docs.map(doc => ({ 
                         id: parseInt(doc.id), 
@@ -3366,26 +3441,37 @@
                     }));
                     renderPairs();
                     setTimeout(() => updateSyncStatus('synced'), 500);
-                }, () => updateSyncStatus('offline'));
+                }, (error) => {
+                    console.error('Pairs sync error:', error);
+                    updateSyncStatus('offline');
+                });
             
+            // Listen to trades collection
             firestoreDb.collection('users').doc(userId).collection('trades')
                 .onSnapshot(snapshot => {
+                    console.log('Trades updated:', snapshot.size, 'documents');
                     trades = snapshot.docs.map(doc => ({ 
                         id: parseInt(doc.id), 
                         ...doc.data() 
                     }));
                     renderJournalStats();
                     renderCalendar();
-                }, () => {});
+                }, (error) => {
+                    console.error('Trades sync error:', error);
+                });
             
+            // Listen to confluence collection
             firestoreDb.collection('users').doc(userId).collection('confluence')
                 .onSnapshot(snapshot => {
+                    console.log('Confluence updated:', snapshot.size, 'documents');
                     confluenceReadings = snapshot.docs.map(doc => ({ 
                         id: parseInt(doc.id), 
                         ...doc.data() 
                     }));
                     renderSavedReadings();
-                }, () => {});
+                }, (error) => {
+                    console.error('Confluence sync error:', error);
+                });
         }
 
         // Form data persistence
@@ -3418,6 +3504,17 @@
                 renderPairs();
                 renderJournalStats();
                 renderCalendar();
+                
+                // Check if we're in offline mode and show warning
+                setTimeout(() => {
+                    const storedUserId = localStorage.getItem('userId');
+                    if (storedUserId && storedUserId.startsWith('offline_')) {
+                        const offlineWarning = document.getElementById('offlineWarning');
+                        if (offlineWarning) {
+                            offlineWarning.style.display = 'block';
+                        }
+                    }
+                }, 1000);
                 
                 // Auto-clear custom symbol when typing
                 document.getElementById('customSymbol').addEventListener('input', function(e) {
