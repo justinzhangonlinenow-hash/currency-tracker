@@ -3439,11 +3439,16 @@ The app is in offline mode because Firebase can't write data. This is usually be
                         id: parseInt(doc.id), 
                         ...doc.data() 
                     }));
-                    renderPairs();
+                    renderPairs(); // Always render, even if empty
                     setTimeout(() => updateSyncStatus('synced'), 500);
                 }, (error) => {
                     console.error('Pairs sync error:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
                     updateSyncStatus('offline');
+                    
+                    // Still render empty state
+                    renderPairs();
                 });
             
             // Listen to trades collection
@@ -3458,6 +3463,8 @@ The app is in offline mode because Firebase can't write data. This is usually be
                     renderCalendar();
                 }, (error) => {
                     console.error('Trades sync error:', error);
+                    renderJournalStats();
+                    renderCalendar();
                 });
             
             // Listen to confluence collection
@@ -3501,9 +3508,22 @@ The app is in offline mode because Firebase can't write data. This is usually be
         // Load data on page load
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                renderPairs();
-                renderJournalStats();
-                renderCalendar();
+                // DON'T render immediately - wait for Firebase to load data
+                // renderPairs();
+                // renderJournalStats();
+                // renderCalendar();
+                
+                // Show loading state instead
+                const grid = document.getElementById('pairsGrid');
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">⏳</div>
+                            <div class="empty-state-text">Loading your data...</div>
+                            <div class="empty-state-subtext">Connecting to cloud sync</div>
+                        </div>
+                    `;
+                }
                 
                 // Check if we're in offline mode and show warning
                 setTimeout(() => {
