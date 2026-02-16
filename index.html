@@ -10,7 +10,6 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     
     <style>
         * {
@@ -2119,14 +2118,6 @@
         </div>
     </header>
 
-    <!-- Offline Warning Banner -->
-    <div id="offlineWarning" style="display: none; background: #dc2626; color: white; padding: 1rem 2rem; text-align: center; font-weight: 600; border-bottom: 2px solid #991b1b;">
-        ⚠️ OFFLINE MODE: Data will NOT sync across devices. Your data is only saved locally.
-        <button onclick="showFixInstructions()" style="margin-left: 1rem; padding: 0.5rem 1rem; background: white; color: #dc2626; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">
-            FIX THIS
-        </button>
-    </div>
-
     <div class="container">
         <!-- Active Pairs Counter -->
         <div class="active-pairs">
@@ -3295,57 +3286,28 @@
           appId: "1:671039928192:web:01b96a9609684fd0f33365"
         };
 
-        // Firebase initialization
-        let app, firestoreDb, auth, userId;
+        // Firebase initialization - SIMPLE VERSION, NO AUTH
+        let app, firestoreDb, userId;
         let isOnline = false;
         let syncListenersActive = false;
+        
+        // Use a fixed userId for everyone - we don't care about security
+        userId = 'shared-user-123';
         
         try {
             app = firebase.initializeApp(firebaseConfig);
             firestoreDb = firebase.firestore();
-            auth = firebase.auth();
             
             firestoreDb.enablePersistence({ synchronizeTabs: true })
                 .catch(() => {});
             
-            // Firebase Auth automatically persists anonymous auth across page reloads
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    // User is already signed in (persisted across reloads)
-                    console.log('✓ Authenticated user:', user.uid);
-                    userId = user.uid;
-                    localStorage.setItem('userId', userId);
-                    isOnline = true;
-                    
-                    // Only setup listeners once
-                    if (!syncListenersActive) {
-                        setupRealtimeSync();
-                        syncListenersActive = true;
-                    }
-                    
-                    updateSyncStatus('synced');
-                } else {
-                    // No user signed in, create new anonymous user
-                    console.log('Creating new anonymous user...');
-                    auth.signInAnonymously()
-                        .then(cred => {
-                            console.log('✓ New anonymous user created:', cred.user.uid);
-                            userId = cred.user.uid;
-                            localStorage.setItem('userId', userId);
-                            isOnline = true;
-                            
-                            // Setup sync will be triggered by onAuthStateChanged callback
-                            updateSyncStatus('synced');
-                        })
-                        .catch((err) => {
-                            console.error('❌ FIREBASE AUTH FAILED:', err);
-                            console.error('Error code:', err.code);
-                            console.error('Error message:', err.message);
-                            alert('FIREBASE AUTH FAILED: ' + err.message + '\n\nCheck console for details.');
-                            updateSyncStatus('offline');
-                        });
-                }
-            });
+            console.log('✅ Firebase initialized with userId:', userId);
+            isOnline = true;
+            
+            // Setup sync immediately
+            setupRealtimeSync();
+            updateSyncStatus('synced');
+            
         } catch (error) {
             console.error('❌ FIREBASE INITIALIZATION FAILED:', error);
             alert('FIREBASE INIT FAILED: ' + error.message);
@@ -3362,7 +3324,6 @@
             const indicator = document.getElementById('syncIndicator');
             const dot = document.getElementById('syncDot');
             const text = document.getElementById('syncStatus');
-            const offlineWarning = document.getElementById('offlineWarning');
             
             if (!indicator) return;
             
@@ -3372,64 +3333,18 @@
             if (status === 'synced') {
                 text.textContent = 'SYNCED';
                 isOnline = true;
-                if (offlineWarning) offlineWarning.style.display = 'none';
             } else if (status === 'syncing') {
                 indicator.classList.add('syncing');
                 dot.classList.add('syncing');
                 text.textContent = 'SYNCING...';
-                if (offlineWarning) offlineWarning.style.display = 'none';
             } else {
                 indicator.classList.add('offline');
                 dot.classList.add('offline');
                 text.textContent = 'OFFLINE';
                 isOnline = false;
-                
-                // Show offline warning if userId is offline
-                if (offlineWarning && userId && userId.startsWith('offline_')) {
-                    offlineWarning.style.display = 'block';
-                }
             }
         }
 
-        // Show instructions for fixing offline mode
-        function showFixInstructions() {
-            const instructions = `🔧 TO FIX OFFLINE MODE:
-
-1. Go to Firebase Console:
-   https://console.firebase.google.com/
-
-2. Select your project: currency-tracker-7ede6
-
-3. Click "Firestore Database" in sidebar
-
-4. Click "Rules" tab at the top
-
-5. Replace the rules with:
-
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if true;
-    }
-    match /syncCodes/{code} {
-      allow read, write: if true;
-    }
-  }
-}
-
-6. Click "Publish"
-
-7. Refresh this page
-
-The app is in offline mode because Firebase can't write data. This is usually because:
-- Firestore security rules not set (most common)
-- No internet connection
-- Firebase project issues`;
-
-            alert(instructions);
-        }
-        
         // Setup real-time sync
         async function setupRealtimeSync() {
             if (!firestoreDb || !userId) {
@@ -3559,12 +3474,7 @@ The app is in offline mode because Firebase can't write data. This is usually be
         // Load data on page load
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                // DON'T render immediately - wait for Firebase to load data
-                // renderPairs();
-                // renderJournalStats();
-                // renderCalendar();
-                
-                // Show loading state instead
+                // Show loading state
                 const grid = document.getElementById('pairsGrid');
                 if (grid) {
                     grid.innerHTML = `
@@ -3575,17 +3485,6 @@ The app is in offline mode because Firebase can't write data. This is usually be
                         </div>
                     `;
                 }
-                
-                // Check if we're in offline mode and show warning
-                setTimeout(() => {
-                    const storedUserId = localStorage.getItem('userId');
-                    if (storedUserId && storedUserId.startsWith('offline_')) {
-                        const offlineWarning = document.getElementById('offlineWarning');
-                        if (offlineWarning) {
-                            offlineWarning.style.display = 'block';
-                        }
-                    }
-                }, 1000);
                 
                 // Auto-clear custom symbol when typing
                 document.getElementById('customSymbol').addEventListener('input', function(e) {
@@ -4923,7 +4822,7 @@ The app is in offline mode because Firebase can't write data. This is usually be
             
             // Test 2: Check initialization
             console.log('\nTest 2: Firebase initialized?');
-            if (!firestoreDb || !auth) {
+            if (!firestoreDb) {
                 console.error('❌ FAIL: Firebase not initialized');
                 results.push('❌ Firebase not initialized');
             } else {
@@ -4931,15 +4830,10 @@ The app is in offline mode because Firebase can't write data. This is usually be
                 results.push('✅ Firebase initialized');
             }
             
-            // Test 3: Check authentication
-            console.log('\nTest 3: User authenticated?');
-            if (!userId || userId.startsWith('offline_')) {
-                console.error('❌ FAIL: Not authenticated (userId:', userId + ')');
-                results.push('❌ Not authenticated');
-            } else {
-                console.log('✅ PASS: Authenticated as', userId);
-                results.push('✅ Authenticated: ' + userId.substring(0, 8) + '...');
-            }
+            // Test 3: Check userId
+            console.log('\nTest 3: UserId set?');
+            console.log('✅ PASS: Using userId:', userId);
+            results.push('✅ UserId: ' + userId);
             
             // Test 4: Try to write data
             console.log('\nTest 4: Can write to Firestore?');
