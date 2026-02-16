@@ -2083,7 +2083,6 @@
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                Export
             </button>
             <button class="icon-btn" onclick="document.getElementById('importFile').click()" title="Import Data">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2091,7 +2090,6 @@
                     <polyline points="17 8 12 3 7 8"></polyline>
                     <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                Import
             </button>
             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
             <button class="icon-btn" onclick="testFirebase()" title="Test Firebase Connection" style="background: #f59e0b; border-color: #d97706;">
@@ -2099,7 +2097,6 @@
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
-                Test
             </button>
             <button class="btn-wipe" onclick="wipeData()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2131,6 +2128,7 @@
             <button class="tab active" id="monitorTab" onclick="switchTab('monitor')">Monitor</button>
             <button class="tab" id="registerTab" onclick="switchTab('register')">Register Pair</button>
             <button class="tab" id="confluenceTab" onclick="switchTab('confluence')">Confluence</button>
+            <button class="tab" id="calculatorTab" onclick="switchTab('calculator')">Position Calculator</button>
             <button class="tab" id="journalTab" onclick="switchTab('journal')">Trading Journal</button>
         </div>
 
@@ -2768,6 +2766,196 @@
             </div>
         </div>
 
+        <!-- Position Size Calculator View -->
+        <div id="calculatorView" style="display: none;">
+            <div class="confluence-container">
+                <div class="section-header" style="margin-bottom: 2rem;">
+                    <h2 class="section-title-main" style="font-size: 1.75rem; font-weight: 700; color: #ffffff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.75rem;">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        POSITION SIZE CALCULATOR
+                    </h2>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">Calculate position size based on account balance and risk</p>
+                </div>
+
+                <!-- Calculator Card -->
+                <div style="background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 16px; padding: 3rem; max-width: 900px; margin: 0 auto;">
+                    <h3 style="text-align: center; font-size: 1.5rem; font-weight: 600; color: #ffffff; margin-bottom: 2.5rem;">Values</h3>
+                    
+                    <!-- Input Table -->
+                    <div style="display: table; width: 100%; border-spacing: 0 1.25rem;">
+                        <!-- Currency Pair -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
+                                Currency Pair:
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
+                                <select class="form-select" id="calcCurrencyPair" onchange="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                                    <option value="AUDJPY">AUDJPY</option>
+                                    <option value="AUDCAD">AUDCAD</option>
+                                    <option value="AUDCHF">AUDCHF</option>
+                                    <option value="AUDNZD">AUDNZD</option>
+                                    <option value="AUDUSD">AUDUSD</option>
+                                    <option value="BTCUSD">BTCUSD</option>
+                                    <option value="CADJPY">CADJPY</option>
+                                    <option value="CADCHF">CADCHF</option>
+                                    <option value="CHFJPY">CHFJPY</option>
+                                    <option value="EURAUD">EURAUD</option>
+                                    <option value="EURCAD">EURCAD</option>
+                                    <option value="EURCHF">EURCHF</option>
+                                    <option value="EURGBP">EURGBP</option>
+                                    <option value="EURJPY">EURJPY</option>
+                                    <option value="EURNZD">EURNZD</option>
+                                    <option value="EURUSD">EURUSD</option>
+                                    <option value="ETHUSD">ETHUSD</option>
+                                    <option value="GBPAUD">GBPAUD</option>
+                                    <option value="GBPCAD">GBPCAD</option>
+                                    <option value="GBPCHF">GBPCHF</option>
+                                    <option value="GBPJPY">GBPJPY</option>
+                                    <option value="GBPNZD">GBPNZD</option>
+                                    <option value="GBPUSD">GBPUSD</option>
+                                    <option value="LTCUSD">LTCUSD</option>
+                                    <option value="NZDCAD">NZDCAD</option>
+                                    <option value="NZDCHF">NZDCHF</option>
+                                    <option value="NZDJPY">NZDJPY</option>
+                                    <option value="NZDUSD">NZDUSD</option>
+                                    <option value="USDCAD" selected>USDCAD</option>
+                                    <option value="USDCHF">USDCHF</option>
+                                    <option value="USDCNH">USDCNH</option>
+                                    <option value="USDJPY">USDJPY</option>
+                                    <option value="XAGUSD">XAGUSD</option>
+                                    <option value="XAUUSD">XAUUSD</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Account Currency -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
+                                Account Currency:
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
+                                <select class="form-select" id="calcAccountCurrency" onchange="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                                    <option value="USD" selected>USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="JPY">JPY</option>
+                                    <option value="CAD">CAD</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="CHF">CHF</option>
+                                    <option value="NZD">NZD</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Account Size -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
+                                Account Size:
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
+                                <input type="text" class="form-input" id="calcAccountBalance" placeholder="10,000" value="" oninput="formatAccountSize(this); calculatePosition();" style="width: 100%; font-size: 1rem;">
+                            </div>
+                        </div>
+
+                        <!-- Risk Ratio -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
+                                Risk Ratio, %:
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
+                                <input type="number" class="form-input" id="calcRiskRatio" placeholder="1" value="" step="0.1" min="0.1" max="100" oninput="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                            </div>
+                        </div>
+
+                        <!-- Stop Loss -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
+                                Stop-Loss, Pips:
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
+                                <input type="number" class="form-input" id="calcStopLoss" placeholder="50" value="" step="1" min="1" oninput="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                            </div>
+                        </div>
+
+                        <!-- Trade Size -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
+                                Trade Size (<span style="text-decoration: underline;">Lots</span>):
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
+                                <input type="text" class="form-input" id="calcTradeSize" placeholder="100,000" value="1" readonly style="width: 100%; font-size: 1rem; background: #000; cursor: not-allowed;">
+                            </div>
+                        </div>
+
+                        <!-- Current Rate Display -->
+                        <div style="display: table-row;">
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;" id="pairRateLabel">
+                                USDCAD:
+                            </div>
+                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;" id="pairRateValue">
+                                1.36309
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2.5rem;">
+                        <button onclick="resetCalculator()" style="padding: 0.875rem 2rem; background: #6b7280; border: none; border-radius: 8px; color: #ffffff; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                            Reset
+                        </button>
+                        <button onclick="calculatePosition()" style="padding: 0.875rem 2rem; background: #f59e0b; border: none; border-radius: 8px; color: #000000; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                            Calculate
+                        </button>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="calcResults" style="display: none; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1f1f1f;">
+                        <h3 style="text-align: center; font-size: 1.25rem; font-weight: 600; color: #ffffff; margin-bottom: 1.5rem;">Results</h3>
+                        
+                        <div style="display: table; width: 100%; max-width: 500px; margin: 0 auto; border-spacing: 0 1rem;">
+                            <div style="display: table-row;">
+                                <div style="display: table-cell; padding: 0.75rem 1rem; color: #e0e0e0; font-size: 1rem;">Money, <span id="resultCurrency">USD</span></div>
+                                <div style="display: table-cell; padding: 0.75rem 1rem; text-align: right; color: #e0e0e0; font-size: 1rem;" id="resultMoney">$100</div>
+                            </div>
+                            <div style="display: table-row;">
+                                <div style="display: table-cell; padding: 0.75rem 1rem; color: #e0e0e0; font-size: 1rem;">Units</div>
+                                <div style="display: table-cell; padding: 0.75rem 1rem; text-align: right; color: #e0e0e0; font-size: 1rem;" id="resultUnits">71,742</div>
+                            </div>
+                            <div style="display: table-row;">
+                                <div style="display: table-cell; padding: 0.75rem 1rem; color: #e0e0e0; font-size: 1rem;">Sizing</div>
+                                <div style="display: table-cell; padding: 0.75rem 1rem; text-align: right; color: #e0e0e0; font-size: 1rem;" id="resultSizing">0.72 lots</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important Notes -->
+                <div style="margin-top: 2rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1.5rem; max-width: 900px; margin: 2rem auto 0;">
+                    <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <div style="flex: 1;">
+                            <div style="color: #10b981; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem;">Important Notes</div>
+                            <ul style="color: #6b7280; font-size: 0.8125rem; line-height: 1.6; margin: 0; padding-left: 1.25rem;">
+                                <li><strong>Units</strong> = Total currency units to trade</li>
+                                <li><strong>Sizing</strong> = Standard lots (1 lot = 100,000 units)</li>
+                                <li>Always verify calculations with your broker</li>
+                                <li>Risk management: 1-2% per trade recommended</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="journalView" class="journal-view">
             <!-- Statistics Overview -->
             <div class="journal-stats">
@@ -2858,6 +3046,17 @@
                     <div class="stat-card-value" id="avgConfluence">0%</div>
                     <div class="stat-card-subtext">Trade quality</div>
                 </div>
+            </div>
+
+            <!-- Clear Statistics Button -->
+            <div style="margin-bottom: 2rem; display: flex; justify-content: flex-end;">
+                <button onclick="clearAllStatistics()" class="btn-wipe" style="background: transparent; border: 1px solid #7f1d1d;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear All Statistics
+                </button>
             </div>
 
             <!-- Quick Trade Entry -->
@@ -3635,20 +3834,24 @@
             const monitorTab = document.getElementById('monitorTab');
             const registerTab = document.getElementById('registerTab');
             const confluenceTab = document.getElementById('confluenceTab');
+            const calculatorTab = document.getElementById('calculatorTab');
             const journalTab = document.getElementById('journalTab');
             const monitorView = document.getElementById('monitorView');
             const registerView = document.getElementById('registerView');
             const confluenceView = document.getElementById('confluenceView');
+            const calculatorView = document.getElementById('calculatorView');
             const journalView = document.getElementById('journalView');
 
             // Remove all active states
             monitorTab.classList.remove('active');
             registerTab.classList.remove('active');
             confluenceTab.classList.remove('active');
+            calculatorTab.classList.remove('active');
             journalTab.classList.remove('active');
             monitorView.style.display = 'none';
             registerView.classList.remove('active');
             confluenceView.style.display = 'none';
+            calculatorView.style.display = 'none';
             journalView.classList.remove('active');
 
             if (tab === 'monitor') {
@@ -3663,6 +3866,10 @@
                 confluenceView.style.display = 'block';
                 setupConfluenceCheckboxes();
                 renderSavedReadings();
+            } else if (tab === 'calculator') {
+                calculatorTab.classList.add('active');
+                calculatorView.style.display = 'block';
+                calculatePosition(); // Calculate on tab open
             } else if (tab === 'journal') {
                 journalTab.classList.add('active');
                 journalView.classList.add('active');
@@ -3915,7 +4122,8 @@
             }
 
             grid.innerHTML = filteredPairs.map(pair => {
-                const notes = pair.narrative.split('\n').filter(line => line.trim());
+                // Don't split notes - display as single block
+                const notes = pair.narrative || 'No notes provided';
                 
                 // Determine stage class for color
                 let stageClass = 'not-set';
@@ -4001,14 +4209,7 @@
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </div>
-                            <div class="notes-list" id="notes-${pair.id}">
-                                ${notes.map(note => `
-                                    <div class="note-item">
-                                        <span class="note-bullet"></span>
-                                        <span>${note}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
+                            <div class="notes-list" id="notes-${pair.id}" style="white-space: pre-wrap; padding: 1rem; background: #000; border-radius: 8px; color: #e0e0e0; font-size: 0.875rem; line-height: 1.6;">${notes}</div>
                         </div>
                     </div>
                 `;
@@ -4137,11 +4338,17 @@
         }
 
         async function loadTrades() {
-            if (!firestoreDb || !userId) return;
+            if (!firestoreDb || !userId) {
+                trades = [];
+                return;
+            }
             try {
                 const snap = await firestoreDb.collection('users').doc(userId).collection('trades').get();
                 trades = snap.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
-            } catch (e) {}
+                console.log('Loaded trades:', trades.length);
+            } catch (e) {
+                trades = [];
+            }
         }
 
         // Change picker month
@@ -4557,6 +4764,23 @@
         function renderJournalStats() {
             const stats = calculateStats();
 
+            // If no trades, show empty state
+            if (stats.totalTrades === 0) {
+                document.getElementById('totalPl').textContent = '--';
+                document.getElementById('totalPl').style.color = '#6b7280';
+                document.getElementById('totalPlIcon').className = 'stat-card-icon';
+                document.getElementById('totalTrades').textContent = 'No trades yet';
+                document.getElementById('winRate').textContent = '--';
+                document.getElementById('winLoss').textContent = '--';
+                document.getElementById('totalProfit').textContent = '--';
+                document.getElementById('winCount').textContent = 'No winning trades';
+                document.getElementById('totalLoss').textContent = '--';
+                document.getElementById('lossCount').textContent = 'No losing trades';
+                document.getElementById('profitFactor').textContent = '--';
+                document.getElementById('avgConfluence').textContent = '--';
+                return;
+            }
+
             // Total P/L
             const totalPlEl = document.getElementById('totalPl');
             const totalPlIconEl = document.getElementById('totalPlIcon');
@@ -4793,6 +5017,12 @@
                     const confBatch = firestoreDb.batch();
                     confSnap.docs.forEach(doc => confBatch.delete(doc.ref));
                     await confBatch.commit();
+                    
+                    // Reload data and update UI
+                    await loadPairs();
+                    await loadTrades();
+                    renderJournalStats();
+                    renderCalendar();
                     
                     updateSyncStatus('synced');
                     showMessage('✓ All data wiped');
@@ -5269,6 +5499,199 @@ TO SYNC TO ANOTHER DEVICE:
                 showMessage('✓ Reading deleted');
             } catch (error) {
                 showMessage('Error deleting reading', 'error');
+            }
+        }
+
+        // ========== POSITION SIZE CALCULATOR FUNCTIONS ==========
+
+        // Exchange rates for all pairs
+        const exchangeRates = {
+            'AUDJPY': 97.92,
+            'AUDCAD': 0.8895,
+            'AUDCHF': 0.5800,
+            'AUDNZD': 1.0880,
+            'AUDUSD': 0.6550,
+            'BTCUSD': 97500.00,
+            'CADJPY': 110.12,
+            'CADCHF': 0.6520,
+            'CHFJPY': 168.90,
+            'EURAUD': 1.6565,
+            'EURCAD': 1.4729,
+            'EURCHF': 0.9610,
+            'EURGBP': 0.8580,
+            'EURJPY': 162.20,
+            'EURNZD': 1.8020,
+            'EURUSD': 1.0850,
+            'ETHUSD': 3600.00,
+            'GBPAUD': 1.9313,
+            'GBPCAD': 1.7179,
+            'GBPCHF': 1.1200,
+            'GBPJPY': 189.15,
+            'GBPNZD': 2.1010,
+            'GBPUSD': 1.2650,
+            'LTCUSD': 105.00,
+            'NZDCAD': 0.8175,
+            'NZDCHF': 0.5330,
+            'NZDJPY': 90.01,
+            'NZDUSD': 0.6020,
+            'USDCAD': 1.36309,
+            'USDCHF': 0.8850,
+            'USDCNH': 7.2450,
+            'USDJPY': 149.50,
+            'XAGUSD': 32.50,
+            'XAUUSD': 2680.00
+        };
+
+        function formatAccountSize(input) {
+            // Remove all non-digits
+            let value = input.value.replace(/[^\d]/g, '');
+            // Add commas
+            if (value) {
+                input.value = parseInt(value).toLocaleString();
+            }
+        }
+
+        function updatePairRate() {
+            const pair = document.getElementById('calcCurrencyPair').value;
+            const rate = exchangeRates[pair] || 1.0;
+            document.getElementById('pairRateLabel').textContent = pair + ':';
+            document.getElementById('pairRateValue').textContent = rate.toFixed(5);
+        }
+
+        function resetCalculator() {
+            document.getElementById('calcAccountBalance').value = '';
+            document.getElementById('calcRiskRatio').value = '';
+            document.getElementById('calcStopLoss').value = '';
+            document.getElementById('calcTradeSize').value = '1';
+            document.getElementById('calcResults').style.display = 'none';
+        }
+
+        function calculatePosition() {
+            // Update pair rate display
+            updatePairRate();
+
+            const accountCurrency = document.getElementById('calcAccountCurrency').value;
+            const accountBalanceStr = document.getElementById('calcAccountBalance').value.replace(/,/g, '');
+            const accountBalance = parseFloat(accountBalanceStr) || 0;
+            const riskRatio = parseFloat(document.getElementById('calcRiskRatio').value) || 0;
+            const stopLoss = parseFloat(document.getElementById('calcStopLoss').value) || 0;
+            const currencyPair = document.getElementById('calcCurrencyPair').value;
+
+            // If any required field is empty, hide results
+            if (accountBalance === 0 || riskRatio === 0 || stopLoss === 0) {
+                document.getElementById('calcResults').style.display = 'none';
+                return;
+            }
+
+            // Get exchange rate
+            const exchangeRate = exchangeRates[currencyPair] || 1.0;
+
+            // Determine if JPY pair (uses different pip size)
+            const isJpyPair = currencyPair.includes('JPY');
+            const pipSize = isJpyPair ? 0.01 : 0.0001;
+
+            // Calculate risk amount
+            const riskAmount = accountBalance * (riskRatio / 100);
+
+            // Get base and quote currency
+            const baseCurrency = currencyPair.substring(0, 3);
+            const quoteCurrency = currencyPair.substring(3, 6);
+
+            // Calculate pip value per standard lot (100,000 units) in account currency
+            let pipValuePerLot;
+            
+            if (accountCurrency === 'USD') {
+                if (quoteCurrency === 'USD') {
+                    // XXX/USD pairs (e.g., EUR/USD, GBP/USD)
+                    // Pip value = 100,000 * 0.0001 = $10 per pip per lot
+                    pipValuePerLot = 100000 * pipSize;
+                } else if (baseCurrency === 'USD') {
+                    // USD/XXX pairs (e.g., USD/CAD, USD/JPY)
+                    // Pip value = (100,000 * pip size) / exchange rate
+                    // Example: USD/CAD at 1.36300 → (100,000 * 0.0001) / 1.36300 = $7.34 per pip
+                    pipValuePerLot = (100000 * pipSize) / exchangeRate;
+                } else {
+                    // Cross pairs (e.g., EUR/GBP)
+                    pipValuePerLot = (100000 * pipSize) / exchangeRate;
+                }
+            } else {
+                // For non-USD accounts
+                if (quoteCurrency === accountCurrency) {
+                    pipValuePerLot = 100000 * pipSize;
+                } else if (baseCurrency === accountCurrency) {
+                    pipValuePerLot = 100000 * pipSize * exchangeRate;
+                } else {
+                    pipValuePerLot = (100000 * pipSize) / exchangeRate;
+                }
+            }
+
+            // Calculate position size in STANDARD LOTS (100,000 units)
+            // Formula: Risk Amount / (Stop Loss in pips × Pip Value per Lot)
+            const standardLots = riskAmount / (stopLoss * pipValuePerLot);
+            
+            // Calculate units (1 standard lot = 100,000 units)
+            const units = Math.round(standardLots * 100000);
+
+            // Update displays
+            document.getElementById('resultCurrency').textContent = accountCurrency;
+            document.getElementById('resultMoney').textContent = '$' + riskAmount.toLocaleString();
+            document.getElementById('resultUnits').textContent = units.toLocaleString();
+            document.getElementById('resultSizing').textContent = standardLots.toFixed(2) + ' lots';
+
+            document.getElementById('calcResults').style.display = 'block';
+
+            // Console verification
+            console.log('=== MYFXBOOK POSITION CALCULATION ===');
+            console.log('Account:', accountBalance.toLocaleString(), accountCurrency);
+            console.log('Risk:', riskRatio + '% = $' + riskAmount.toLocaleString());
+            console.log('Pair:', currencyPair, '@', exchangeRate);
+            console.log('Stop Loss:', stopLoss, 'pips');
+            console.log('Pip Size:', pipSize);
+            console.log('Pip Value per Standard Lot (100k units): $' + pipValuePerLot.toFixed(2));
+            console.log('Position Size (Standard Lots): ' + standardLots.toFixed(4));
+            console.log('Units: ' + units.toLocaleString());
+            console.log('Sizing: ' + standardLots.toFixed(2) + ' lots');
+            
+            // Verify calculation
+            const calculatedRisk = stopLoss * pipValuePerLot * standardLots;
+            console.log('\nVerification:');
+            console.log(stopLoss + ' pips × $' + pipValuePerLot.toFixed(2) + ' × ' + standardLots.toFixed(4) + ' lots');
+            console.log('= $' + calculatedRisk.toFixed(2));
+            console.log('Should equal: $' + riskAmount.toFixed(2));
+            console.log('Match:', Math.abs(calculatedRisk - riskAmount) < 0.01 ? '✓' : '✗');
+        }
+
+        // ========== CLEAR ALL STATISTICS FUNCTION ==========
+
+        async function clearAllStatistics() {
+            if (!confirm('⚠️ Delete ALL trades from your journal? This will clear all statistics but keep your pairs intact.')) {
+                return;
+            }
+
+            try {
+                updateSyncStatus('syncing');
+                
+                if (firestoreDb && userId) {
+                    // Delete all trades from Firestore
+                    const tradesSnap = await firestoreDb.collection('users').doc(userId).collection('trades').get();
+                    const batch = firestoreDb.batch();
+                    tradesSnap.docs.forEach(doc => batch.delete(doc.ref));
+                    await batch.commit();
+                }
+                
+                // Clear local trades array
+                trades = [];
+                
+                // Update UI
+                renderJournalStats();
+                renderCalendar();
+                
+                updateSyncStatus('synced');
+                showMessage('✓ All trades cleared successfully');
+            } catch (error) {
+                console.error('Error clearing trades:', error);
+                showMessage('Error clearing trades', 'error');
+                updateSyncStatus('offline');
             }
         }
     </script>
