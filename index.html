@@ -10,6 +10,7 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     
     <style>
         * {
@@ -53,21 +54,6 @@
             align-items: center;
             justify-content: center;
             font-size: 24px;
-        }
-
-        .logo-text h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-        }
-
-        .logo-text p {
-            font-size: 0.7rem;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 2px;
         }
 
         .logo-text h1 {
@@ -130,6 +116,34 @@
             background: #10b981;
             border-radius: 50%;
             animation: pulse 2s infinite;
+        }
+
+        
+        .live-indicator.syncing {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .live-indicator.offline {
+            color: #6b7280;
+            background: rgba(107, 114, 128, 0.1);
+            border-color: rgba(107, 114, 128, 0.3);
+        }
+
+        .live-dot.syncing {
+            background: #f59e0b;
+            animation: spin 1s linear infinite;
+        }
+
+        .live-dot.offline {
+            background: #6b7280;
+            animation: none;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @keyframes pulse {
@@ -2057,7 +2071,7 @@
             <div class="logo-icon">▦</div>
             <div class="logo-text">
                 <h1>CURRENCY TRACKER</h1>
-                <p>Institutional Market Context</p>
+                <p>Cloud Synced Across Devices</p>
             </div>
         </div>
         <div class="header-actions">
@@ -2085,9 +2099,9 @@
                 </svg>
                 WIPE DATA
             </button>
-            <div class="live-indicator">
-                <span class="live-dot"></span>
-                LIVE MARKET
+            <div class="live-indicator" id="syncIndicator">
+                <span class="live-dot" id="syncDot"></span>
+                <span id="syncStatus">SYNCED</span>
             </div>
         </div>
     </header>
@@ -2138,15 +2152,15 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu" id="counterTrendFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('counterTrend', 'all')">
+                        <div class="dropdown-item selected" onclick="selectFilter('counterTrend', 'all', this)">
                             All Trades
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('counterTrend', 'true')">
+                        <div class="dropdown-item" onclick="selectFilter('counterTrend', 'true', this)">
                             Counter Trend
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('counterTrend', 'false')">
+                        <div class="dropdown-item" onclick="selectFilter('counterTrend', 'false', this)">
                             Non-Counter Trend
                             <span class="checkmark">✓</span>
                         </div>
@@ -2167,27 +2181,27 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu" id="stageFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('stage', 'all')">
+                        <div class="dropdown-item selected" onclick="selectFilter('stage', 'all', this)">
                             All Stages
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Break')">
+                        <div class="dropdown-item" onclick="selectFilter('stage', 'Break', this)">
                             Break
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Pullback')">
+                        <div class="dropdown-item" onclick="selectFilter('stage', 'Pullback', this)">
                             Pullback
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Retest')">
+                        <div class="dropdown-item" onclick="selectFilter('stage', 'Retest', this)">
                             Retest
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Entry')">
+                        <div class="dropdown-item" onclick="selectFilter('stage', 'Entry', this)">
                             Entry
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Missed')">
+                        <div class="dropdown-item" onclick="selectFilter('stage', 'Missed', this)">
                             Missed
                             <span class="checkmark">✓</span>
                         </div>
@@ -2209,31 +2223,31 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu" id="tfFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('tf', 'all')">
+                        <div class="dropdown-item selected" onclick="selectFilter('tf', 'all', this)">
                             All Timeframes
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', 'MONTH')">
+                        <div class="dropdown-item" onclick="selectFilter('tf', 'MONTH', this)">
                             Month
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', 'WEEK')">
+                        <div class="dropdown-item" onclick="selectFilter('tf', 'WEEK', this)">
                             Week
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', 'DAILY')">
+                        <div class="dropdown-item" onclick="selectFilter('tf', 'DAILY', this)">
                             Daily
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', '4H')">
+                        <div class="dropdown-item" onclick="selectFilter('tf', '4H', this)">
                             4H
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', '2H')">
+                        <div class="dropdown-item" onclick="selectFilter('tf', '2H', this)">
                             2H
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', '1H')">
+                        <div class="dropdown-item" onclick="selectFilter('tf', '1H', this)">
                             1H
                             <span class="checkmark">✓</span>
                         </div>
@@ -2256,11 +2270,11 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu" id="sortFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('sort', 'newest')">
+                        <div class="dropdown-item selected" onclick="selectFilter('sort', 'newest', this)">
                             Newest First
                             <span class="checkmark">✓</span>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('sort', 'oldest')">
+                        <div class="dropdown-item" onclick="selectFilter('sort', 'oldest', this)">
                             Oldest First
                             <span class="checkmark">✓</span>
                         </div>
@@ -2485,49 +2499,49 @@
                         <div class="conf-section-percent" id="weeklyPercent">0%</div>
                     </div>
                     <div class="conf-items">
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Trend</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="weekly" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">At AOI / Rejected</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="weekly" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Touching EMA</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="weekly" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Round Psychological Level</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="weekly" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Rejection from Previous Structure</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="weekly" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Candlestick Rejection from AOI</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="weekly" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Break & Retest / Head & Shoulders Pattern</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
@@ -2544,49 +2558,49 @@
                         <div class="conf-section-percent" id="dailyPercent">0%</div>
                     </div>
                     <div class="conf-items">
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Trend</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="daily" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">At AOI / Rejected</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="daily" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Touching EMA</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="daily" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Round Psychological Level</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="daily" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Rejection from Previous Structure</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="daily" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Candlestick Rejection from AOI</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="daily" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Break & Retest / Head & Shoulders Pattern</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
@@ -2603,49 +2617,49 @@
                         <div class="conf-section-percent" id="fourHPercent">0%</div>
                     </div>
                     <div class="conf-items">
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Trend</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="fourH" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">At AOI / Rejected</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="fourH" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Touching EMA</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="fourH" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Round Psychological Level</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="fourH" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Rejection from Previous Structure</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="fourH" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Candlestick Rejection from AOI</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="fourH" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Break & Retest / Head & Shoulders Pattern</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
@@ -2662,21 +2676,21 @@
                         <div class="conf-section-percent" id="lowerTfPercent">0%</div>
                     </div>
                     <div class="conf-items">
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Trend</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="lowerTf" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Touching EMA</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="lowerTf" data-value="5">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Break & Retest / Head & Shoulders Pattern</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+5%</span>
@@ -2693,14 +2707,14 @@
                         <div class="conf-section-percent" id="entryPercent">0%</div>
                     </div>
                     <div class="conf-items">
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">SOS</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
                                 <input type="checkbox" class="conf-checkbox" data-section="entry" data-value="10">
                             </div>
                         </div>
-                        <div class="conf-item" onclick="toggleConfCheckbox(this)">
+                        <div class="conf-item" onclick="toggleConfCheckbox(this, event)">
                             <div class="conf-item-label">Engulfing candlestick (30m, 1H, 2H, 4H)</div>
                             <div class="conf-item-right">
                                 <span class="conf-item-value">+10%</span>
@@ -3225,24 +3239,17 @@
     </div>
 
     <script>
-        // IndexedDB setup
-        let db;
-        const DB_NAME = 'CurrencyTrackerDB';
-        const DB_VERSION = 4; // Incremented for confluence readings store
-        const STORE_NAME = 'pairs';
-        const TRADES_STORE = 'trades';
+        // ========== APP INITIALIZATION ==========
 
         // FIREBASE SYNC CONFIG - ENABLE WHEN YOU WANT PHONE/COMPUTER SYNC
         // See FIREBASE_SYNC_SETUP.md for instructions
         const ENABLE_SYNC = true; // Change to true after adding your Firebase config below
         
         // REPLACE WITH YOUR FIREBASE CONFIG (get from Firebase Console)
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "firebase/app";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-
-        // Your web app's Firebase configuration
+        // ============================================================
+        // FIREBASE CLOUD SYNC - Configured and Ready
+        // ============================================================
+        
         const firebaseConfig = {
           apiKey: "AIzaSyCy_C5-UodTq-LMBSgKDZkh8tsI-EbljLs",
           authDomain: "currency-tracker-7ede6.firebaseapp.com",
@@ -3252,81 +3259,103 @@
           appId: "1:671039928192:web:01b96a9609684fd0f33365"
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-
-        // Initialize Firebase if sync enabled
-        let firestore = null;
-        let syncUserId = null;
+        // Firebase initialization
+        let app, firestoreDb, auth, userId;
+        let isOnline = false;
         
-        if (ENABLE_SYNC && typeof firebase !== 'undefined') {
-            try {
-                firebase.initializeApp(firebaseConfig);
-                firestore = firebase.firestore();
-                
-                // Get or create user ID
-                syncUserId = localStorage.getItem('currencyTrackerUserId');
-                if (!syncUserId) {
-                    syncUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('currencyTrackerUserId', syncUserId);
-                }
-            } catch (error) {
-                console.warn('Firebase sync disabled:', error.message);
-            }
-        }
-
-        // Form data persistence
-        let formData = {};
-
-        // Initialize IndexedDB
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-                request.onerror = () => {
-                    reject(request.error);
-                };
-                
-                request.onsuccess = () => {
-                    db = request.result;
-                    resolve(db);
-                };
-
-                request.onupgradeneeded = (event) => {
-                    db = event.target.result;
-                    
-                    // Create pairs store if it doesn't exist
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                        objectStore.createIndex('symbol', 'symbol', { unique: false });
-                        objectStore.createIndex('direction', 'direction', { unique: false });
-                        objectStore.createIndex('marketStage', 'marketStage', { unique: false });
-                        objectStore.createIndex('triggerTF', 'triggerTF', { unique: false });
-                    }
-                    
-                    // Create trades store if it doesn't exist
-                    if (!db.objectStoreNames.contains(TRADES_STORE)) {
-                        const tradesStore = db.createObjectStore(TRADES_STORE, { keyPath: 'id' });
-                        tradesStore.createIndex('pair', 'pair', { unique: false });
-                        tradesStore.createIndex('direction', 'direction', { unique: false });
-                        tradesStore.createIndex('date', 'date', { unique: false });
-                        tradesStore.createIndex('pl', 'pl', { unique: false });
-                    }
-                    
-                    // Create confluence readings store
-                    if (!db.objectStoreNames.contains('confluenceReadings')) {
-                        const confStore = db.createObjectStore('confluenceReadings', { keyPath: 'id' });
-                        confStore.createIndex('pair', 'pair', { unique: false });
-                        confStore.createIndex('date', 'date', { unique: false });
-                        confStore.createIndex('confluence', 'confluence', { unique: false });
-                    }
-                };
-            });
+        try {
+            app = firebase.initializeApp(firebaseConfig);
+            firestoreDb = firebase.firestore();
+            auth = firebase.auth();
+            
+            firestoreDb.enablePersistence({ synchronizeTabs: true })
+                .catch(() => {});
+            
+            auth.signInAnonymously()
+                .then(cred => {
+                    userId = cred.user.uid;
+                    localStorage.setItem('userId', userId);
+                    isOnline = true;
+                    setupRealtimeSync();
+                    updateSyncStatus('synced');
+                })
+                .catch(() => {
+                    userId = localStorage.getItem('userId') || 'offline_' + Date.now();
+                    updateSyncStatus('offline');
+                });
+        } catch (error) {
+            userId = 'offline_' + Date.now();
+            updateSyncStatus('offline');
         }
 
         // Data storage
         let pairs = [];
         let trades = [];
+        let confluenceReadings = [];
+        
+        // Update sync status UI
+        function updateSyncStatus(status) {
+            const indicator = document.getElementById('syncIndicator');
+            const dot = document.getElementById('syncDot');
+            const text = document.getElementById('syncStatus');
+            
+            if (!indicator) return;
+            
+            indicator.className = 'live-indicator';
+            dot.className = 'live-dot';
+            
+            if (status === 'synced') {
+                text.textContent = 'SYNCED';
+                isOnline = true;
+            } else if (status === 'syncing') {
+                indicator.classList.add('syncing');
+                dot.classList.add('syncing');
+                text.textContent = 'SYNCING...';
+            } else {
+                indicator.classList.add('offline');
+                dot.classList.add('offline');
+                text.textContent = 'OFFLINE';
+                isOnline = false;
+            }
+        }
+        
+        // Setup real-time sync
+        function setupRealtimeSync() {
+            if (!firestoreDb || !userId) return;
+            
+            firestoreDb.collection('users').doc(userId).collection('pairs')
+                .onSnapshot(snapshot => {
+                    updateSyncStatus('syncing');
+                    pairs = snapshot.docs.map(doc => ({ 
+                        id: parseInt(doc.id), 
+                        ...doc.data() 
+                    }));
+                    renderPairs();
+                    setTimeout(() => updateSyncStatus('synced'), 500);
+                }, () => updateSyncStatus('offline'));
+            
+            firestoreDb.collection('users').doc(userId).collection('trades')
+                .onSnapshot(snapshot => {
+                    trades = snapshot.docs.map(doc => ({ 
+                        id: parseInt(doc.id), 
+                        ...doc.data() 
+                    }));
+                    renderJournalStats();
+                    renderCalendar();
+                }, () => {});
+            
+            firestoreDb.collection('users').doc(userId).collection('confluence')
+                .onSnapshot(snapshot => {
+                    confluenceReadings = snapshot.docs.map(doc => ({ 
+                        id: parseInt(doc.id), 
+                        ...doc.data() 
+                    }));
+                    renderSavedReadings();
+                }, () => {});
+        }
+
+        // Form data persistence
+        let formData = {};
         
         // Drag and drop state
         let draggedElement = null;
@@ -3350,12 +3379,8 @@
         };
 
         // Load data on page load
-        window.addEventListener('DOMContentLoaded', async () => {
+        window.addEventListener('DOMContentLoaded', () => {
             try {
-                await initDB();
-                await loadData();
-                await loadTrades();
-                await loadConfluenceReadings();
                 renderPairs();
                 renderJournalStats();
                 renderCalendar();
@@ -3389,7 +3414,7 @@
                     }
                 });
             } catch (error) {
-                alert('Error loading app: ' + error.message);
+                console.error('Error loading app: ' + error.message);
             }
         });
 
@@ -3474,12 +3499,12 @@
         });
 
         // Select filter option
-        function selectFilter(type, value) {
+        function selectFilter(type, value, el) {
             filters[type] = value;
             
             const items = document.querySelectorAll(`#${type}Filter .dropdown-item`);
             items.forEach(item => item.classList.remove('selected'));
-            event.target.classList.add('selected');
+            if (el) el.closest('.dropdown-item').classList.add('selected');
             
             if (type === 'counterTrend') {
                 let text = 'All Trades';
@@ -3701,53 +3726,38 @@
             }
         }
 
-        // Save pair to IndexedDB
-        function savePair(pair) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const request = objectStore.add(pair);
-
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+        // Save pair to Firestore
+        async function savePair(pair) {
+            if (!firestoreDb || !userId) return;
+            try {
+                updateSyncStatus('syncing');
+                await firestoreDb.collection('users').doc(userId).collection('pairs')
+                    .doc(pair.id.toString()).set(pair);
+                updateSyncStatus('synced');
+            } catch (error) {
+                updateSyncStatus('offline');
+            }
         }
 
-        // Load data from IndexedDB
-        function loadData() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const request = objectStore.getAll();
-
-                request.onsuccess = () => {
-                    pairs = request.result;
-                    resolve(pairs);
-                };
-                request.onerror = () => reject(request.error);
-            });
+        // Delete pair from Firestore
+        async function deletePairFromDB(id) {
+            if (!firestoreDb || !userId) return;
+            try {
+                updateSyncStatus('syncing');
+                await firestoreDb.collection('users').doc(userId).collection('pairs')
+                    .doc(id.toString()).delete();
+            } catch (error) {}
         }
 
-        // Delete pair from IndexedDB
-        function deletePairFromDB(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const request = objectStore.delete(id);
-
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        // Render pairs
+        // Render pairs in the monitor view
         function renderPairs() {
             const grid = document.getElementById('pairsGrid');
             const count = document.getElementById('activePairsCount');
+            if (!grid || !count) return;
 
-            let filteredPairs = pairs.filter(pair => {
-                if (filters.search && !pair.symbol.toLowerCase().includes(filters.search.toLowerCase())) {
-                    return false;
+            const filteredPairs = pairs.filter(pair => {
+                if (filters.search) {
+                    if (!pair.symbol.toLowerCase().includes(filters.search.toLowerCase())) return false;
                 }
                 
                 if (filters.counterTrend !== 'all') {
@@ -3989,30 +3999,38 @@
             }
         }
 
-        function updatePairInDB(pair) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const request = objectStore.put(pair);
-                
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
+        async function updatePairInDB(pair) {
+            if (!firestoreDb || !userId) return;
+            try {
+                await firestoreDb.collection('users').doc(userId).collection('pairs')
+                    .doc(pair.id.toString()).set(pair);
+            } catch (error) {}
         }
 
-        // ========== DATE PICKER FUNCTIONS ==========
-
-        // Toggle date picker dropdown
+        // Toggle date picker
         function toggleDatePicker() {
             const dropdown = document.getElementById('datePickerDropdown');
             const input = document.getElementById('datePickerInput');
-            
-            dropdown.classList.toggle('active');
-            input.classList.toggle('active');
-            
-            if (dropdown.classList.contains('active')) {
-                renderDatePicker();
-            }
+            const isActive = dropdown.classList.contains('active');
+            dropdown.classList.toggle('active', !isActive);
+            input.classList.toggle('active', !isActive);
+        }
+
+        // Load data wrappers (Firestore uses real-time listeners via setupRealtimeSync)
+        async function loadData() {
+            if (!firestoreDb || !userId) return;
+            try {
+                const snap = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
+                pairs = snap.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
+            } catch (e) {}
+        }
+
+        async function loadTrades() {
+            if (!firestoreDb || !userId) return;
+            try {
+                const snap = await firestoreDb.collection('users').doc(userId).collection('trades').get();
+                trades = snap.docs.map(doc => ({ id: parseInt(doc.id), ...doc.data() }));
+            } catch (e) {}
         }
 
         // Change picker month
@@ -4317,43 +4335,33 @@
 
         // ========== TRADING JOURNAL FUNCTIONS ==========
 
-        // Load trades from IndexedDB
-        function loadTrades() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([TRADES_STORE], 'readonly');
-                const objectStore = transaction.objectStore(TRADES_STORE);
-                const request = objectStore.getAll();
-
-                request.onsuccess = () => {
-                    trades = request.result;
-                    resolve(trades);
-                };
-                request.onerror = () => reject(request.error);
-            });
+        // Load trades (handled by real-time listeners)
+        async function loadTrades() {
+            return Promise.resolve();
         }
 
-        // Save trade to IndexedDB
-        function saveTrade(trade) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([TRADES_STORE], 'readwrite');
-                const objectStore = transaction.objectStore(TRADES_STORE);
-                const request = objectStore.add(trade);
-
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+        // Save trade to Firestore
+        async function saveTrade(trade) {
+            if (!firestoreDb || !userId) return;
+            try {
+                updateSyncStatus('syncing');
+                await firestoreDb.collection('users').doc(userId).collection('trades')
+                    .doc(trade.id.toString()).set(trade);
+                updateSyncStatus('synced');
+            } catch (error) {}
         }
 
-        // Delete trade from IndexedDB
-        function deleteTradeFromDB(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([TRADES_STORE], 'readwrite');
-                const objectStore = transaction.objectStore(TRADES_STORE);
-                const request = objectStore.delete(id);
-
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
+        // Delete trade from Firestore
+        async function deleteTradeFromDB(id) {
+            if (!firestoreDb || !userId) return;
+            try {
+                updateSyncStatus('syncing');
+                await firestoreDb.collection('users').doc(userId).collection('trades')
+                    .doc(id.toString()).delete();
+                updateSyncStatus('synced');
+            } catch (error) {
+                updateSyncStatus('offline');
+            }
         }
 
         // Handle trade form submission (minimal version)
@@ -4660,21 +4668,27 @@
 
         // Wipe all data
         async function wipeData() {
-            if (confirm('⚠️ Are you sure you want to delete ALL pairs?\n\nThis action cannot be undone and will permanently remove all your registered currency pairs.')) {
+            if (confirm('⚠️ Delete ALL data from cloud?')) {
                 try {
-                    const transaction = db.transaction([STORE_NAME], 'readwrite');
-                    const objectStore = transaction.objectStore(STORE_NAME);
-                    const request = objectStore.clear();
-
-                    request.onsuccess = async () => {
-                        await loadData();
-                        renderPairs();
-                        showMessage('✓ All data wiped successfully');
-                    };
-
-                    request.onerror = () => {
-                        showMessage('Error wiping data', 'error');
-                    };
+                    updateSyncStatus('syncing');
+                    
+                    const pairsSnap = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
+                    const pairsBatch = firestoreDb.batch();
+                    pairsSnap.docs.forEach(doc => pairsBatch.delete(doc.ref));
+                    await pairsBatch.commit();
+                    
+                    const tradesSnap = await firestoreDb.collection('users').doc(userId).collection('trades').get();
+                    const tradesBatch = firestoreDb.batch();
+                    tradesSnap.docs.forEach(doc => tradesBatch.delete(doc.ref));
+                    await tradesBatch.commit();
+                    
+                    const confSnap = await firestoreDb.collection('users').doc(userId).collection('confluence').get();
+                    const confBatch = firestoreDb.batch();
+                    confSnap.docs.forEach(doc => confBatch.delete(doc.ref));
+                    await confBatch.commit();
+                    
+                    updateSyncStatus('synced');
+                    showMessage('✓ All data wiped');
                 } catch (error) {
                     showMessage('Error wiping data', 'error');
                 }
@@ -4688,6 +4702,7 @@
                 const exportData = {
                     pairs: pairs,
                     trades: trades,
+                    confluenceReadings: confluenceReadings,
                     exportDate: new Date().toISOString(),
                     version: "1.0"
                 };
@@ -4721,17 +4736,28 @@
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
+                    updateSyncStatus('syncing');
                     const imported = JSON.parse(e.target.result);
                     
                     if (!imported.pairs || !Array.isArray(imported.pairs)) {
-                        throw new Error('Invalid');
+                        throw new Error('Invalid file format');
                     }
                     
-                    // Clear all
-                    const tx1 = db.transaction([STORE_NAME], 'readwrite');
-                    await tx1.objectStore(STORE_NAME).clear();
-                    const tx2 = db.transaction([TRADES_STORE], 'readwrite');
-                    await tx2.objectStore(TRADES_STORE).clear();
+                    // Delete existing data
+                    const pairsSnap = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
+                    const pairsBatch = firestoreDb.batch();
+                    pairsSnap.docs.forEach(doc => pairsBatch.delete(doc.ref));
+                    await pairsBatch.commit();
+                    
+                    const tradesSnap = await firestoreDb.collection('users').doc(userId).collection('trades').get();
+                    const tradesBatch = firestoreDb.batch();
+                    tradesSnap.docs.forEach(doc => tradesBatch.delete(doc.ref));
+                    await tradesBatch.commit();
+                    
+                    const confSnap = await firestoreDb.collection('users').doc(userId).collection('confluence').get();
+                    const confBatch = firestoreDb.batch();
+                    confSnap.docs.forEach(doc => confBatch.delete(doc.ref));
+                    await confBatch.commit();
                     
                     // Import pairs
                     for (const pair of imported.pairs) {
@@ -4768,15 +4794,20 @@
                         }
                     }
                     
-                    await loadData();
-                    await loadTrades();
-                    renderPairs();
-                    renderJournalStats();
-                    renderCalendar();
+                    // Import confluence
+                    if (imported.confluenceReadings && Array.isArray(imported.confluenceReadings)) {
+                        for (const reading of imported.confluenceReadings) {
+                            if (!reading.id) continue;
+                            await firestoreDb.collection('users').doc(userId).collection('confluence')
+                                .doc(reading.id.toString()).set(reading);
+                        }
+                    }
                     
+                    updateSyncStatus('synced');
                     showMessage(`✓ Imported ${imported.pairs.length} pairs & ${imported.trades?.length || 0} trades!`);
                 } catch (error) {
                     showMessage('Error: Invalid file', 'error');
+                    updateSyncStatus('offline');
                 }
             };
             reader.readAsText(file);
@@ -4785,9 +4816,7 @@
 
         // ========== CONFLUENCE CALCULATOR FUNCTIONS ==========
 
-        let confluenceReadings = [];
-
-        function toggleConfCheckbox(item) {
+        function toggleConfCheckbox(item, event) {
             const checkbox = item.querySelector('.conf-checkbox');
             if (checkbox && event.target !== checkbox) {
                 checkbox.checked = !checkbox.checked;
@@ -4888,36 +4917,25 @@
             };
             
             try {
-                const transaction = db.transaction(['confluenceReadings'], 'readwrite');
-                const objectStore = transaction.objectStore('confluenceReadings');
-                objectStore.add(reading);
-                
-                transaction.oncomplete = async () => {
-                    await loadConfluenceReadings();
+                if (firestoreDb && userId) {
+                    updateSyncStatus('syncing');
+                    await firestoreDb.collection('users').doc(userId).collection('confluence')
+                        .doc(reading.id.toString()).set(reading);
+                    updateSyncStatus('synced');
+                } else {
+                    // Fallback: store in memory
+                    confluenceReadings.push(reading);
                     renderSavedReadings();
-                    showMessage(`✓ ${pair.toUpperCase()} reading saved (${total}%)`);
-                };
-                
-                transaction.onerror = () => {
-                    showMessage('Error saving reading', 'error');
-                };
+                }
+                showMessage(`✓ ${pair.toUpperCase()} reading saved (${total}%)`);
             } catch (error) {
                 showMessage('Error saving reading', 'error');
+                updateSyncStatus('offline');
             }
         }
 
         async function loadConfluenceReadings() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['confluenceReadings'], 'readonly');
-                const objectStore = transaction.objectStore('confluenceReadings');
-                const request = objectStore.getAll();
-                
-                request.onsuccess = () => {
-                    confluenceReadings = request.result.sort((a, b) => b.id - a.id);
-                    resolve(confluenceReadings);
-                };
-                request.onerror = () => reject(request.error);
-            });
+            return Promise.resolve();
         }
 
         function renderSavedReadings() {
@@ -4960,17 +4978,11 @@
 
         async function deleteConfluenceReading(id) {
             if (!confirm('Delete this confluence reading?')) return;
-            
             try {
-                const transaction = db.transaction(['confluenceReadings'], 'readwrite');
-                const objectStore = transaction.objectStore('confluenceReadings');
-                objectStore.delete(id);
-                
-                transaction.oncomplete = async () => {
-                    await loadConfluenceReadings();
-                    renderSavedReadings();
-                    showMessage('✓ Reading deleted');
-                };
+                updateSyncStatus('syncing');
+                await firestoreDb.collection('users').doc(userId).collection('confluence')
+                    .doc(id.toString()).delete();
+                showMessage('✓ Reading deleted');
             } catch (error) {
                 showMessage('Error deleting reading', 'error');
             }
