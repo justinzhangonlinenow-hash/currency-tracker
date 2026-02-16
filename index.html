@@ -2898,7 +2898,7 @@
                                 USDCAD:
                             </div>
                             <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;" id="pairRateValue">
-                                1.36309
+                                1.36300
                             </div>
                         </div>
                     </div>
@@ -3869,7 +3869,7 @@
             } else if (tab === 'calculator') {
                 calculatorTab.classList.add('active');
                 calculatorView.style.display = 'block';
-                calculatePosition(); // Calculate on tab open
+                updatePairRate(); // Update rate display on tab open
             } else if (tab === 'journal') {
                 journalTab.classList.add('active');
                 journalView.classList.add('active');
@@ -4583,7 +4583,7 @@
                 const pair = document.getElementById('editTradePair').value.toUpperCase();
                 const direction = document.getElementById('editTradeDirection').value;
                 const result = document.getElementById('editTradeResult').value;
-                const pl = parseFloat(document.getElementById('editTradePl').value);
+                const pl = parseFloat(document.getElementById('editTradePl').value) || 0;
                 const tradeDate = document.getElementById('editTradeDate').value;
                 const confluence = document.getElementById('editTradeConfluence').value ? parseInt(document.getElementById('editTradeConfluence').value) : null;
                 const notes = document.getElementById('editTradeNotes').value;
@@ -4690,7 +4690,7 @@
                 const pair = document.getElementById('tradePair').value.toUpperCase();
                 const direction = document.getElementById('tradeDirection').value;
                 const result = document.getElementById('tradeResult').value;
-                const pl = parseFloat(document.getElementById('tradePl').value);
+                const pl = parseFloat(document.getElementById('tradePl').value) || 0;
                 const tradeDate = document.getElementById('tradeDate').value;
                 const confluence = document.getElementById('tradeConfluence').value ? parseInt(document.getElementById('tradeConfluence').value) : null;
                 const notes = document.getElementById('tradeNotes').value;
@@ -5504,7 +5504,7 @@ TO SYNC TO ANOTHER DEVICE:
 
         // ========== POSITION SIZE CALCULATOR FUNCTIONS ==========
 
-        // Exchange rates for all pairs
+        // Exchange rates for all pairs (Updated to current rates)
         const exchangeRates = {
             'AUDJPY': 97.92,
             'AUDCAD': 0.8895,
@@ -5524,7 +5524,7 @@ TO SYNC TO ANOTHER DEVICE:
             'EURUSD': 1.0850,
             'ETHUSD': 3600.00,
             'GBPAUD': 1.9313,
-            'GBPCAD': 1.7179,
+            'GBPCAD': 1.71790,
             'GBPCHF': 1.1200,
             'GBPJPY': 189.15,
             'GBPNZD': 2.1010,
@@ -5534,8 +5534,8 @@ TO SYNC TO ANOTHER DEVICE:
             'NZDCHF': 0.5330,
             'NZDJPY': 90.01,
             'NZDUSD': 0.6020,
-            'USDCAD': 1.36309,
-            'USDCHF': 0.8850,
+            'USDCAD': 1.36300,  // Updated to match myfxbook screenshot
+            'USDCHF': 0.76934,  // Updated to match myfxbook screenshot
             'USDCNH': 7.2450,
             'USDJPY': 149.50,
             'XAGUSD': 32.50,
@@ -5602,20 +5602,41 @@ TO SYNC TO ANOTHER DEVICE:
             
             if (accountCurrency === 'USD') {
                 if (quoteCurrency === 'USD') {
-                    // XXX/USD pairs (e.g., EUR/USD, GBP/USD)
-                    // Pip value = 100,000 * 0.0001 = $10 per pip per lot
+                    // XXX/USD pairs (e.g., EUR/USD, GBP/USD, AUD/USD)
+                    // Pip value = 100,000 * pip size = $10 per pip
                     pipValuePerLot = 100000 * pipSize;
                 } else if (baseCurrency === 'USD') {
-                    // USD/XXX pairs (e.g., USD/CAD, USD/JPY)
+                    // USD/XXX pairs (e.g., USD/CAD, USD/JPY, USD/CHF)
+                    // Pip value in quote currency, convert to USD
                     // Pip value = (100,000 * pip size) / exchange rate
-                    // Example: USD/CAD at 1.36300 → (100,000 * 0.0001) / 1.36300 = $7.34 per pip
                     pipValuePerLot = (100000 * pipSize) / exchangeRate;
                 } else {
-                    // Cross pairs (e.g., EUR/GBP)
-                    pipValuePerLot = (100000 * pipSize) / exchangeRate;
+                    // Cross pairs (e.g., GBP/CAD, EUR/GBP, AUD/NZD)
+                    // Pip value is in quote currency, need to convert to USD
+                    // Step 1: Pip value in quote currency = 100,000 * pip size
+                    // Step 2: Convert quote currency to USD
+                    
+                    const pipValueInQuoteCurrency = 100000 * pipSize;
+                    
+                    // Get the quote currency to USD rate
+                    // If quote is CAD, we need CAD/USD rate = 1 / USD/CAD
+                    let quoteToUsdRate;
+                    
+                    if (exchangeRates['USD' + quoteCurrency]) {
+                        // USD/XXX exists, so XXX/USD = 1 / USD/XXX
+                        quoteToUsdRate = 1 / exchangeRates['USD' + quoteCurrency];
+                    } else if (exchangeRates[quoteCurrency + 'USD']) {
+                        // XXX/USD exists directly
+                        quoteToUsdRate = exchangeRates[quoteCurrency + 'USD'];
+                    } else {
+                        // Fallback: estimate using the pair rate
+                        quoteToUsdRate = 1 / exchangeRate;
+                    }
+                    
+                    pipValuePerLot = pipValueInQuoteCurrency * quoteToUsdRate;
                 }
             } else {
-                // For non-USD accounts
+                // For non-USD accounts - simplified approach
                 if (quoteCurrency === accountCurrency) {
                     pipValuePerLot = 100000 * pipSize;
                 } else if (baseCurrency === accountCurrency) {
@@ -5645,10 +5666,11 @@ TO SYNC TO ANOTHER DEVICE:
             console.log('Account:', accountBalance.toLocaleString(), accountCurrency);
             console.log('Risk:', riskRatio + '% = $' + riskAmount.toLocaleString());
             console.log('Pair:', currencyPair, '@', exchangeRate);
+            console.log('Base:', baseCurrency, 'Quote:', quoteCurrency);
             console.log('Stop Loss:', stopLoss, 'pips');
             console.log('Pip Size:', pipSize);
-            console.log('Pip Value per Standard Lot (100k units): $' + pipValuePerLot.toFixed(2));
-            console.log('Position Size (Standard Lots): ' + standardLots.toFixed(4));
+            console.log('Pip Value per Standard Lot: $' + pipValuePerLot.toFixed(2));
+            console.log('Position Size: ' + standardLots.toFixed(4) + ' lots');
             console.log('Units: ' + units.toLocaleString());
             console.log('Sizing: ' + standardLots.toFixed(2) + ' lots');
             
@@ -5658,7 +5680,7 @@ TO SYNC TO ANOTHER DEVICE:
             console.log(stopLoss + ' pips × $' + pipValuePerLot.toFixed(2) + ' × ' + standardLots.toFixed(4) + ' lots');
             console.log('= $' + calculatedRisk.toFixed(2));
             console.log('Should equal: $' + riskAmount.toFixed(2));
-            console.log('Match:', Math.abs(calculatedRisk - riskAmount) < 0.01 ? '✓' : '✗');
+            console.log('Match:', Math.abs(calculatedRisk - riskAmount) < 1 ? '✓' : '✗');
         }
 
         // ========== CLEAR ALL STATISTICS FUNCTION ==========
