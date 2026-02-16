@@ -3422,7 +3422,7 @@ The app is in offline mode because Firebase can't write data. This is usually be
         }
         
         // Setup real-time sync
-        function setupRealtimeSync() {
+        async function setupRealtimeSync() {
             if (!firestoreDb || !userId) {
                 console.error('Cannot setup sync: missing firestore or userId');
                 return;
@@ -3430,31 +3430,63 @@ The app is in offline mode because Firebase can't write data. This is usually be
             
             console.log('Setting up real-time sync for user:', userId);
             
-            // Listen to pairs collection
+            try {
+                // INITIAL LOAD - Fetch existing data first
+                console.log('Fetching initial data...');
+                
+                const pairsSnapshot = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
+                pairs = pairsSnapshot.docs.map(doc => ({ 
+                    id: parseInt(doc.id), 
+                    ...doc.data() 
+                }));
+                console.log('Initial pairs loaded:', pairs.length);
+                renderPairs();
+                
+                const tradesSnapshot = await firestoreDb.collection('users').doc(userId).collection('trades').get();
+                trades = tradesSnapshot.docs.map(doc => ({ 
+                    id: parseInt(doc.id), 
+                    ...doc.data() 
+                }));
+                console.log('Initial trades loaded:', trades.length);
+                renderJournalStats();
+                renderCalendar();
+                
+                const confluenceSnapshot = await firestoreDb.collection('users').doc(userId).collection('confluence').get();
+                confluenceReadings = confluenceSnapshot.docs.map(doc => ({ 
+                    id: parseInt(doc.id), 
+                    ...doc.data() 
+                }));
+                console.log('Initial confluence loaded:', confluenceReadings.length);
+                renderSavedReadings();
+                
+                updateSyncStatus('synced');
+                
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+                updateSyncStatus('offline');
+            }
+            
+            // NOW set up real-time listeners for changes
             firestoreDb.collection('users').doc(userId).collection('pairs')
                 .onSnapshot(snapshot => {
-                    console.log('Pairs updated:', snapshot.size, 'documents');
+                    console.log('Pairs changed:', snapshot.size, 'documents');
                     updateSyncStatus('syncing');
                     pairs = snapshot.docs.map(doc => ({ 
                         id: parseInt(doc.id), 
                         ...doc.data() 
                     }));
-                    renderPairs(); // Always render, even if empty
+                    renderPairs();
                     setTimeout(() => updateSyncStatus('synced'), 500);
                 }, (error) => {
                     console.error('Pairs sync error:', error);
                     console.error('Error code:', error.code);
                     console.error('Error message:', error.message);
                     updateSyncStatus('offline');
-                    
-                    // Still render empty state
-                    renderPairs();
                 });
             
-            // Listen to trades collection
             firestoreDb.collection('users').doc(userId).collection('trades')
                 .onSnapshot(snapshot => {
-                    console.log('Trades updated:', snapshot.size, 'documents');
+                    console.log('Trades changed:', snapshot.size, 'documents');
                     trades = snapshot.docs.map(doc => ({ 
                         id: parseInt(doc.id), 
                         ...doc.data() 
@@ -3463,14 +3495,11 @@ The app is in offline mode because Firebase can't write data. This is usually be
                     renderCalendar();
                 }, (error) => {
                     console.error('Trades sync error:', error);
-                    renderJournalStats();
-                    renderCalendar();
                 });
             
-            // Listen to confluence collection
             firestoreDb.collection('users').doc(userId).collection('confluence')
                 .onSnapshot(snapshot => {
-                    console.log('Confluence updated:', snapshot.size, 'documents');
+                    console.log('Confluence changed:', snapshot.size, 'documents');
                     confluenceReadings = snapshot.docs.map(doc => ({ 
                         id: parseInt(doc.id), 
                         ...doc.data() 
