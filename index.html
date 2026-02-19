@@ -2065,60 +2065,369 @@
             pointer-events: none;
         }
 
-        /* ========== MOBILE RESPONSIVE STYLES ========== */
+        /* ============================================================
+           CALCULATOR COMPONENT - Replaces display:table layout
+           ============================================================ */
+        .calc-card {
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            border-radius: 16px;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
 
-        @media (max-width: 768px) {
+        .calc-card-title {
+            text-align: center;
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+        }
 
-            /* Header */
+        .calc-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .calc-field-row {
+            display: grid;
+            grid-template-columns: minmax(140px, 35%) 1fr;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.625rem 0.5rem;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+
+        .calc-field-row:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .calc-field-label {
+            color: #e0e0e0;
+            font-size: clamp(0.8125rem, 1.5vw, 1rem);
+            font-weight: 500;
+        }
+
+        .calc-field-input {
+            width: 100%;
+        }
+
+        .calc-field-input .form-input,
+        .calc-field-input .form-select {
+            width: 100%;
+            font-size: clamp(0.8125rem, 1.5vw, 1rem);
+        }
+
+        .calc-field-value {
+            color: #e0e0e0;
+            font-size: clamp(0.8125rem, 1.5vw, 1rem);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            padding: 0.875rem 1rem;
+        }
+
+        .calc-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: clamp(1.5rem, 3vw, 2.5rem);
+            flex-wrap: wrap;
+        }
+
+        .calc-btn-reset {
+            padding: 0.875rem 2rem;
+            background: #6b7280;
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .calc-btn-reset:hover {
+            background: #9ca3af;
+            transform: translateY(-1px);
+        }
+
+        .calc-btn-calculate {
+            padding: 0.875rem 2rem;
+            background: #f59e0b;
+            border: none;
+            border-radius: 8px;
+            color: #000000;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .calc-btn-calculate:hover {
+            background: #fbbf24;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .calc-results-title {
+            text-align: center;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.25rem;
+            margin-top: clamp(1.5rem, 3vw, 3rem);
+            padding-top: clamp(1.25rem, 2vw, 2rem);
+            border-top: 1px solid #1f1f1f;
+        }
+
+        .calc-results-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .calc-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 10px;
+        }
+
+        .calc-result-label {
+            color: #9ca3af;
+            font-size: clamp(0.8125rem, 1.5vw, 1rem);
+            font-weight: 500;
+        }
+
+        .calc-result-value {
+            color: #10b981;
+            font-size: clamp(0.9375rem, 1.75vw, 1.125rem);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .calc-notes {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: clamp(1rem, 2.5vw, 1.5rem);
+        }
+
+        .calc-notes-inner {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .calc-notes-title {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .calc-notes-list {
+            color: #6b7280;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .day-stats-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .day-stats-row .stat-card {
+            flex: 1;
+            min-width: 0;
+        }
+
+        @media (max-width: 399px) {
+            .day-stats-row {
+                flex-direction: column;
+            }
+        }
+
+        .calendar-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .calendar-month-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        @media (max-width: 639px) {
+            .calendar-section-header {
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .calendar-month-label {
+                font-size: 0.875rem;
+                min-width: 120px;
+            }
+
+            .calendar-nav {
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 639px) {
+            .calc-field-row {
+                grid-template-columns: 1fr;
+                gap: 0.375rem;
+                padding: 0.5rem 0.25rem;
+            }
+
+            .calc-field-label {
+                font-size: 0.75rem;
+                color: #9ca3af;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 600;
+            }
+
+            .calc-btn-reset,
+            .calc-btn-calculate {
+                max-width: none;
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE & FLUID DESIGN SYSTEM
+           Breakpoints:
+             xs  : <480px   (small phones)
+             sm  : 480–639px (phones)
+             md  : 640–1023px (tablets)
+             lg  : 1024–1279px (laptops)
+             xl  : 1280–1535px (desktops)
+             2xl : 1536px+ (wide monitors)
+           ============================================================ */
+
+        /* ---------- Base fluid utilities ---------- */
+        html {
+            font-size: clamp(14px, 1.1vw, 16px);
+            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Better touch targets globally */
+        button, input, select, textarea, [role="button"] {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ---------- Container fluid scaling ---------- */
+        .container {
+            padding: clamp(1rem, 3vw, 2.5rem);
+            max-width: 1600px;
+        }
+
+        /* ---------- Ultra-wide (≥1536px) ---------- */
+        @media (min-width: 1536px) {
+            .container {
+                max-width: 1600px;
+                padding: 2.5rem 3rem;
+            }
+
+            .pairs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .journal-stats {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .confluence-summary {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        /* ---------- Large desktop (1280–1535px) ---------- */
+        @media (min-width: 1280px) and (max-width: 1535px) {
+            .pairs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .journal-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ---------- Laptop (1024–1279px) ---------- */
+        @media (min-width: 1024px) and (max-width: 1279px) {
+            .pairs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bias-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ---------- Tablet & below (< 1024px) ---------- */
+        @media (max-width: 1023px) {
+            /* Header responsive */
             .header {
-                padding: 1rem;
-                flex-wrap: wrap;
+                padding: 0.875rem 1.25rem;
                 gap: 0.75rem;
+                flex-wrap: wrap;
             }
 
             .logo-text h1 {
-                font-size: 1.1rem;
-            }
-
-            .logo-text p {
-                font-size: 0.6rem;
-            }
-
-            .logo-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 18px;
+                font-size: 1.15rem;
             }
 
             .header-actions {
                 gap: 0.5rem;
-                flex-wrap: wrap;
             }
 
-            .btn-wipe {
-                padding: 0.5rem 0.875rem;
-                font-size: 0.75rem;
-            }
-
-            .live-indicator {
-                font-size: 0.75rem;
-                padding: 0.4rem 0.75rem;
-            }
-
-            /* Container */
-            .container {
-                padding: 1rem;
-            }
-
-            /* Tabs - scrollable on mobile */
+            /* Tabs scroll on tablet */
             .tabs {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
+                flex-wrap: nowrap;
                 padding: 0.375rem;
                 gap: 0.25rem;
-                flex-wrap: nowrap;
-                white-space: nowrap;
+                margin-bottom: 1.5rem;
             }
 
             .tabs::-webkit-scrollbar {
@@ -2126,119 +2435,625 @@
             }
 
             .tab {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.75rem;
+                padding: 0.75rem 1.5rem;
+                font-size: 0.8125rem;
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+
+            /* Filters */
+            .filters {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            /* Pair card actions always visible on touch */
+            .pair-card .pair-actions {
+                opacity: 1;
+                transform: none;
+            }
+
+            /* Bias grid */
+            .bias-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Form container */
+            .form-container {
+                padding: 2rem;
+            }
+
+            /* Calculator */
+            .confluence-container {
+                max-width: 100%;
+            }
+        }
+
+        /* ---------- Tablet portrait (640–1023px) ---------- */
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .pairs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .journal-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .confluence-summary {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .bias-form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trading-calendar {
+                grid-template-columns: repeat(7, 1fr) 80px;
+                gap: 0.3rem;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+                padding: 0.5rem;
+            }
+
+            .calendar-week-total {
+                min-height: 80px;
+                padding: 0.5rem;
+            }
+
+            .total-conf-value {
+                font-size: 4.5rem;
+            }
+
+            .reading-content {
+                gap: 1.25rem;
+            }
+        }
+
+        /* ---------- Mobile (< 640px) ---------- */
+        @media (max-width: 639px) {
+
+            /* === HEADER === */
+            .header {
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+
+            .logo-section {
+                gap: 0.625rem;
+                min-width: 0;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                border-radius: 9px;
                 flex-shrink: 0;
             }
 
-            /* Pair card */
-            .pair-card {
-                padding: 1.25rem;
+            .logo-text h1 {
+                font-size: 0.9375rem;
+                letter-spacing: 0;
             }
 
-            .pair-name {
-                font-size: 1.5rem;
+            .logo-text p {
+                font-size: 0.5625rem;
+                letter-spacing: 1px;
+            }
+
+            .header-actions {
+                gap: 0.375rem;
+                flex-wrap: nowrap;
+            }
+
+            .icon-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+            }
+
+            .btn-wipe {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.6875rem;
+                gap: 0.3rem;
+            }
+
+            .live-indicator {
+                padding: 0.375rem 0.625rem;
+                font-size: 0.6875rem;
+                gap: 0.35rem;
+            }
+
+            /* Hide "SYNCED" text on very small, show dot only */
+            @media (max-width: 380px) {
+                #syncStatus {
+                    display: none;
+                }
+
+                .btn-wipe span, .btn-wipe svg + * {
+                    display: none;
+                }
+            }
+
+            /* === TABS === */
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                padding: 0.3rem;
+                gap: 0.2rem;
+                border-radius: 10px;
+                margin-bottom: 1.25rem;
+            }
+
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tab {
+                padding: 0.625rem 1rem;
+                font-size: 0.6875rem;
+                border-radius: 6px;
+                flex-shrink: 0;
+                white-space: nowrap;
+                letter-spacing: 0.3px;
+            }
+
+            /* === ACTIVE PAIRS === */
+            .active-pairs {
+                font-size: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            /* === FILTERS === */
+            .filters {
+                grid-template-columns: 1fr;
+                gap: 0.625rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .filter-btn {
+                padding: 0.75rem 0.875rem;
+                font-size: 0.8125rem;
+                min-height: 44px;
+            }
+
+            .search-box input {
+                padding: 0.75rem 0.875rem 0.75rem 2.5rem;
+                font-size: 0.875rem;
+                min-height: 44px;
+            }
+
+            /* === PAIR CARDS === */
+            .pairs-grid {
+                gap: 1rem;
+            }
+
+            .pair-card {
+                padding: 1.25rem;
+                border-radius: 16px;
             }
 
             .pair-header {
-                flex-direction: column;
-                gap: 0.75rem;
-                align-items: flex-start;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1.25rem;
+                gap: 0.5rem;
+            }
+
+            .pair-name {
+                font-size: 1.625rem;
+                letter-spacing: -0.25px;
             }
 
             .pair-actions {
                 opacity: 1;
                 transform: none;
+                gap: 0.5rem;
+            }
+
+            .icon-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .trigger-badge-wrapper {
+                position: static;
+                pointer-events: auto;
+                margin-bottom: 1rem;
+                display: inline-block;
+            }
+
+            .trigger-badge {
+                padding: 0.625rem 1rem;
+                font-size: 0.9375rem;
+                margin-bottom: 0;
+                border-radius: 10px;
             }
 
             .bias-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.625rem;
             }
 
-            /* Forms */
+            .bias-card {
+                padding: 0.875rem;
+                border-radius: 10px;
+            }
+
+            .bias-label {
+                font-size: 0.625rem;
+                margin-bottom: 0.375rem;
+            }
+
+            .bias-value {
+                font-size: 1.125rem;
+            }
+
+            .pair-meta {
+                font-size: 0.6875rem;
+                margin-top: 0.5rem;
+            }
+
+            .contextual-notes {
+                margin-top: 1rem;
+            }
+
+            .notes-header {
+                padding: 0.75rem;
+                font-size: 0.75rem;
+                border-radius: 10px;
+                min-height: 44px;
+            }
+
+            .note-item {
+                padding: 0.75rem 1rem;
+                font-size: 0.8125rem;
+                border-radius: 8px;
+            }
+
+            /* === REGISTER FORM === */
             .form-container {
-                padding: 1.5rem;
+                padding: 1.25rem;
+                border-radius: 14px;
             }
 
             .form-title {
                 font-size: 1.5rem;
+                margin-bottom: 0.375rem;
+            }
+
+            .form-subtitle {
+                font-size: 0.8125rem;
+                margin-bottom: 1.75rem;
             }
 
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .form-input, .form-select {
+                padding: 0.75rem 0.875rem;
+                font-size: 0.875rem;
+                min-height: 44px;
+                border-radius: 8px;
+            }
+
+            .form-label {
+                font-size: 0.6875rem;
             }
 
             .bias-form-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-bottom: 1.25rem;
             }
 
-            /* Confluence */
+            .section-title {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .checkbox-group {
+                padding: 1rem;
+                border-radius: 10px;
+                margin-bottom: 1.5rem;
+                gap: 0.75rem;
+            }
+
+            .checkbox-title {
+                font-size: 0.8125rem;
+            }
+
+            .checkbox-desc {
+                font-size: 0.6875rem;
+            }
+
+            .narrative-input {
+                min-height: 120px;
+                font-size: 0.875rem;
+                padding: 0.75rem;
+                border-radius: 8px;
+            }
+
+            .narrative-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .submit-btn {
+                padding: 1rem;
+                font-size: 0.875rem;
+                min-height: 50px;
+                border-radius: 10px;
+            }
+
+            /* === CONFLUENCE === */
             .confluence-summary {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
             }
 
-            .total-conf-value {
-                font-size: 4rem;
+            .conf-summary-card {
+                padding: 1.25rem;
+                border-radius: 14px;
+            }
+
+            .conf-summary-label {
+                font-size: 0.6875rem;
+                letter-spacing: 1px;
+                margin-bottom: 0.5rem;
+            }
+
+            .conf-summary-value {
+                font-size: 1.75rem;
             }
 
             .total-confluence {
-                padding: 2rem 1.25rem;
+                padding: 1.75rem 1.25rem;
+                margin-bottom: 1.5rem;
+                border-radius: 18px;
+            }
+
+            .total-conf-label {
+                font-size: 0.6875rem;
+                letter-spacing: 2px;
+                margin-bottom: 0.75rem;
+            }
+
+            .total-conf-value {
+                font-size: 3.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .total-conf-quality {
+                font-size: 1rem;
             }
 
             .conf-section {
                 padding: 1.25rem;
+                border-radius: 16px;
+                margin-bottom: 1.25rem;
+            }
+
+            .conf-section-header {
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .conf-section-title {
+                font-size: 0.875rem;
+                letter-spacing: 1px;
+            }
+
+            .conf-section-percent {
+                font-size: 1.5rem;
             }
 
             .conf-item {
-                padding: 1rem;
+                padding: 0.875rem 1rem;
+                border-radius: 10px;
+                min-height: 52px;
             }
 
             .conf-item-label {
                 font-size: 0.8125rem;
+                line-height: 1.4;
+                padding-right: 0.5rem;
             }
 
-            /* Journal stats */
+            .conf-item-right {
+                gap: 0.75rem;
+            }
+
+            .conf-item-value {
+                font-size: 0.75rem;
+                min-width: 40px;
+            }
+
+            .conf-checkbox {
+                width: 26px;
+                height: 26px;
+            }
+
+            .conf-actions {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                margin-top: 2rem;
+            }
+
+            .btn-conf-clear,
+            .btn-conf-save {
+                padding: 1rem 1.5rem;
+                font-size: 0.875rem;
+                border-radius: 12px;
+                min-height: 50px;
+            }
+
+            .saved-readings-container {
+                margin-top: 2.5rem;
+            }
+
+            .reading-item {
+                padding: 1rem 1.25rem;
+                border-radius: 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+                transform: none !important;
+            }
+
+            .reading-item:hover {
+                transform: none;
+            }
+
+            .reading-content {
+                gap: 0.875rem;
+                flex-wrap: wrap;
+            }
+
+            .reading-pair-name {
+                font-size: 1.125rem;
+            }
+
+            .reading-score {
+                font-size: 1.875rem;
+            }
+
+            .reading-date {
+                font-size: 0.75rem;
+            }
+
+            /* === POSITION CALCULATOR === */
+            .confluence-container > div {
+                padding: 1.5rem !important;
+            }
+
+            /* Calculator inputs */
+            #calcResults {
+                margin-top: 1.5rem;
+            }
+
+            /* === JOURNAL === */
             .journal-stats {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+                border-radius: 10px;
+            }
+
+            .stat-card-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-card-label {
+                font-size: 0.625rem;
+            }
+
+            .stat-card-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .stat-card-subtext {
+                font-size: 0.6875rem;
             }
 
             .journal-section {
                 padding: 1.25rem;
+                border-radius: 16px;
+                margin-bottom: 1.25rem;
             }
 
-            /* Trade cards */
-            .trade-card-header {
-                flex-direction: column;
+            .journal-section-title {
+                font-size: 1rem;
+                margin-bottom: 1rem;
                 gap: 0.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            /* === TRADE CARDS === */
+            .trade-card {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+
+            .trade-card-header {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .trade-pair-name {
+                font-size: 1.25rem;
             }
 
             .trade-details-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.625rem;
+                margin-bottom: 0.75rem;
             }
 
-            /* Calendar */
+            .trade-detail-label {
+                font-size: 0.625rem;
+            }
+
+            .trade-detail-value {
+                font-size: 0.8125rem;
+            }
+
+            .btn-delete-trade {
+                padding: 0.5rem 0.875rem;
+                min-height: 36px;
+                font-size: 0.6875rem;
+            }
+
+            /* === TRADING CALENDAR === */
             .trading-calendar {
                 grid-template-columns: repeat(7, 1fr);
                 gap: 0.2rem;
             }
 
+            /* Hide weekly total column on mobile */
             .calendar-week-total {
-                display: none;
+                display: none !important;
+            }
+
+            .calendar-header {
+                font-size: 0.5625rem;
+                padding: 0.375rem 0.125rem;
+                letter-spacing: 0;
             }
 
             .calendar-day {
-                min-height: 60px;
-                padding: 0.4rem;
+                min-height: 52px;
+                padding: 0.3rem 0.25rem;
                 border-radius: 6px;
-            }
-
-            .calendar-day-pl {
-                font-size: 0.65rem;
+                gap: 0.2rem;
             }
 
             .calendar-day-number {
-                font-size: 0.7rem;
+                font-size: 0.625rem;
+                font-weight: 700;
+            }
+
+            .calendar-day-pl {
+                font-size: 0.5625rem;
+                font-weight: 700;
+                line-height: 1.2;
             }
 
             .calendar-day-info {
@@ -2249,149 +3064,277 @@
                 display: none;
             }
 
-            .calendar-header {
-                font-size: 0.6rem;
-                padding: 0.4rem 0.1rem;
+            .calendar-more-link {
+                display: none;
             }
 
-            /* Modal */
+            /* Calendar header row */
+            #tradingCalendar .calendar-header:last-of-type {
+                display: none;
+            }
+
+            /* === MODAL === */
+            .modal-overlay {
+                padding: 0.75rem;
+                align-items: flex-end;
+            }
+
             .modal-content {
-                padding: 1.5rem;
-                border-radius: 12px;
+                padding: 1.5rem 1.25rem;
+                border-radius: 16px 16px 12px 12px;
+                max-height: 92vh;
             }
 
             .modal-title {
-                font-size: 1.25rem;
+                font-size: 1.375rem;
+            }
+
+            .modal-subtitle {
+                font-size: 0.75rem;
+            }
+
+            .modal-close {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
             }
 
             .modal-actions {
                 flex-direction: column;
+                gap: 0.625rem;
+                margin-top: 1.5rem;
             }
 
-            /* Reading items */
-            .reading-item {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-                padding: 1.25rem;
-            }
-
-            .reading-content {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .reading-pair-name {
-                font-size: 1.25rem;
-            }
-
-            .reading-score {
-                font-size: 2rem;
-            }
-
-            /* Success message */
-            .success-message {
-                top: 1rem;
-                right: 1rem;
-                left: 1rem;
+            .btn-secondary, .btn-primary {
+                padding: 0.875rem;
+                min-height: 48px;
                 font-size: 0.8125rem;
             }
 
-            /* Position calculator */
-            .conf-section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
+            /* === SUCCESS MESSAGE === */
+            .success-message {
+                top: auto;
+                bottom: 1.25rem;
+                left: 1rem;
+                right: 1rem;
+                font-size: 0.8125rem;
+                border-radius: 10px;
+                animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             }
 
-            /* Stat cards */
-            .stat-card-value {
-                font-size: 1.5rem;
+            @keyframes slideInUp {
+                0% {
+                    transform: translateY(100px) scale(0.9);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
             }
 
-            /* Dropdowns on mobile - ensure they don't overflow */
-            .dropdown-menu {
+            /* === DATE PICKER === */
+            .date-picker-dropdown {
+                left: 0;
+                right: 0;
                 min-width: unset;
-                max-width: calc(100vw - 2rem);
+                max-width: 100%;
             }
 
-            /* Form rows */
-            .form-row {
-                grid-template-columns: 1fr;
+            /* === EMPTY STATE === */
+            .empty-state {
+                padding: 3rem 1.5rem;
             }
 
-            /* Action buttons in confluence */
-            .conf-actions {
-                flex-direction: column;
+            .empty-state-icon {
+                font-size: 3.5rem;
             }
 
-            .btn-conf-clear,
-            .btn-conf-save {
-                width: 100%;
-                justify-content: center;
+            .empty-state-text {
+                font-size: 1rem;
             }
 
-            /* Trigger badge wrapper on small screens */
-            .trigger-badge-wrapper {
-                position: static;
-                margin-bottom: 1rem;
-                pointer-events: auto;
+            .empty-state-subtext {
+                font-size: 0.8125rem;
+            }
+
+            /* === SELECTED DAY STATS === */
+            #selectedDaySection > div[style*="display: flex"] {
+                gap: 0.625rem;
             }
         }
 
-        @media (max-width: 420px) {
+        /* ---------- Extra small phones (< 400px) ---------- */
+        @media (max-width: 399px) {
+            .header {
+                padding: 0.625rem 0.75rem;
+            }
+
             .logo-text h1 {
-                font-size: 0.95rem;
+                font-size: 0.875rem;
+            }
+
+            .logo-text p {
+                display: none;
+            }
+
+            .icon-btn {
+                width: 34px;
+                height: 34px;
+            }
+
+            .btn-wipe {
+                padding: 0.5rem;
+                font-size: 0;
+            }
+
+            .btn-wipe svg {
+                margin: 0;
+            }
+
+            .tab {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.625rem;
             }
 
             .pair-name {
-                font-size: 1.25rem;
-            }
-
-            .journal-stats {
-                grid-template-columns: 1fr;
-            }
-
-            .confluence-summary {
-                grid-template-columns: 1fr;
+                font-size: 1.375rem;
             }
 
             .bias-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .journal-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-card-value {
+                font-size: 1.25rem;
+            }
+
+            .confluence-summary {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .conf-summary-value {
+                font-size: 1.5rem;
             }
 
             .total-conf-value {
-                font-size: 3rem;
+                font-size: 2.75rem;
             }
 
-            .trade-details-grid {
-                grid-template-columns: 1fr;
+            .calendar-day {
+                min-height: 44px;
             }
         }
 
-        /* Touch-friendly tap targets */
-        @media (hover: none) and (pointer: coarse) {
+        /* ---------- Hover only for non-touch devices ---------- */
+        @media (hover: hover) and (pointer: fine) {
+            .pair-card .pair-actions {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            .pair-card:hover .pair-actions {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .conf-item:hover {
+                transform: translateX(4px);
+            }
+
+            .reading-item:hover {
+                transform: translateX(8px);
+            }
+        }
+
+        /* ---------- Touch devices: always show actions ---------- */
+        @media (hover: none), (pointer: coarse) {
             .pair-card .pair-actions {
                 opacity: 1;
                 transform: none;
             }
 
             .icon-btn {
-                width: 48px;
-                height: 48px;
-            }
-
-            .tab {
+                min-width: 44px;
                 min-height: 44px;
             }
 
-            .filter-btn {
+            .filter-btn,
+            .tab,
+            .dropdown-item,
+            .submit-btn,
+            .btn-conf-clear,
+            .btn-conf-save,
+            .btn-primary,
+            .btn-secondary,
+            .calendar-day,
+            .conf-item {
                 min-height: 44px;
             }
 
-            .dropdown-item {
-                min-height: 44px;
-                padding: 0.875rem 1rem;
+            .conf-item:hover {
+                transform: none;
+            }
+
+            .reading-item:hover {
+                transform: none;
+            }
+
+            .pair-card:hover {
+                transform: none;
+            }
+        }
+
+        /* ---------- Landscape phones (height < 500px) ---------- */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .header {
+                padding: 0.5rem 1rem;
+            }
+
+            .tabs {
+                margin-bottom: 0.75rem;
+            }
+
+            .container {
+                padding-top: 0.75rem;
+            }
+
+            .total-conf-value {
+                font-size: 2.5rem;
+            }
+
+            .total-confluence {
+                padding: 1.25rem;
+            }
+
+            .modal-overlay {
+                align-items: center;
+            }
+
+            .modal-content {
+                max-height: 95vh;
+            }
+        }
+
+        /* ---------- Print ---------- */
+        @media print {
+            .header {
+                position: static;
+            }
+
+            .tabs,
+            .header-actions,
+            .filters {
+                display: none;
+            }
+
+            .pair-card {
+                break-inside: avoid;
             }
         }
     </style>
@@ -3113,18 +4056,15 @@
                 </div>
 
                 <!-- Calculator Card -->
-                <div style="background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 16px; padding: 3rem; max-width: 900px; margin: 0 auto;">
-                    <h3 style="text-align: center; font-size: 1.5rem; font-weight: 600; color: #ffffff; margin-bottom: 2.5rem;">Values</h3>
+                <div class="calc-card">
+                    <h3 class="calc-card-title">Values</h3>
                     
-                    <!-- Input Table -->
-                    <div style="display: table; width: 100%; border-spacing: 0 1.25rem;">
-                        <!-- Currency Pair -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
-                                Currency Pair:
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
-                                <select class="form-select" id="calcCurrencyPair" onchange="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                    <!-- Input Grid -->
+                    <div class="calc-fields">
+                        <div class="calc-field-row">
+                            <div class="calc-field-label">Currency Pair:</div>
+                            <div class="calc-field-input">
+                                <select class="form-select" id="calcCurrencyPair" onchange="calculatePosition()">
                                     <option value="AUDJPY">AUDJPY</option>
                                     <option value="AUDCAD">AUDCAD</option>
                                     <option value="AUDCHF">AUDCHF</option>
@@ -3162,14 +4102,10 @@
                                 </select>
                             </div>
                         </div>
-
-                        <!-- Account Currency -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
-                                Account Currency:
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
-                                <select class="form-select" id="calcAccountCurrency" onchange="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                        <div class="calc-field-row">
+                            <div class="calc-field-label">Account Currency:</div>
+                            <div class="calc-field-input">
+                                <select class="form-select" id="calcAccountCurrency" onchange="calculatePosition()">
                                     <option value="USD" selected>USD</option>
                                     <option value="EUR">EUR</option>
                                     <option value="GBP">GBP</option>
@@ -3181,100 +4117,73 @@
                                 </select>
                             </div>
                         </div>
-
-                        <!-- Account Size -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
-                                Account Size:
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
-                                <input type="text" class="form-input" id="calcAccountBalance" placeholder="10,000" value="" oninput="formatAccountSize(this); calculatePosition();" style="width: 100%; font-size: 1rem;">
+                        <div class="calc-field-row">
+                            <div class="calc-field-label">Account Size:</div>
+                            <div class="calc-field-input">
+                                <input type="text" class="form-input" id="calcAccountBalance" placeholder="10,000" value="" oninput="formatAccountSize(this); calculatePosition();">
                             </div>
                         </div>
-
-                        <!-- Risk Ratio -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
-                                Risk Ratio, %:
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
-                                <input type="number" class="form-input" id="calcRiskRatio" placeholder="1" value="" step="0.1" min="0.1" max="100" oninput="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                        <div class="calc-field-row">
+                            <div class="calc-field-label">Risk Ratio, %:</div>
+                            <div class="calc-field-input">
+                                <input type="number" class="form-input" id="calcRiskRatio" placeholder="1" value="" step="0.1" min="0.1" max="100" oninput="calculatePosition()">
                             </div>
                         </div>
-
-                        <!-- Stop Loss -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
-                                Stop-Loss, Pips:
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
-                                <input type="number" class="form-input" id="calcStopLoss" placeholder="50" value="" step="1" min="1" oninput="calculatePosition()" style="width: 100%; font-size: 1rem;">
+                        <div class="calc-field-row">
+                            <div class="calc-field-label">Stop-Loss, Pips:</div>
+                            <div class="calc-field-input">
+                                <input type="number" class="form-input" id="calcStopLoss" placeholder="50" value="" step="1" min="1" oninput="calculatePosition()">
                             </div>
                         </div>
-
-                        <!-- Trade Size -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;">
-                                Trade Size (<span style="text-decoration: underline;">Lots</span>):
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle;">
-                                <input type="text" class="form-input" id="calcTradeSize" placeholder="100,000" value="1" readonly style="width: 100%; font-size: 1rem; background: #000; cursor: not-allowed;">
+                        <div class="calc-field-row">
+                            <div class="calc-field-label">Trade Size (<span style="text-decoration:underline">Lots</span>):</div>
+                            <div class="calc-field-input">
+                                <input type="text" class="form-input" id="calcTradeSize" placeholder="100,000" value="1" readonly style="background:#000; cursor:not-allowed;">
                             </div>
                         </div>
-
-                        <!-- Current Rate Display -->
-                        <div style="display: table-row;">
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;" id="pairRateLabel">
-                                USDCAD:
-                            </div>
-                            <div style="display: table-cell; padding: 0.75rem 1rem; vertical-align: middle; color: #e0e0e0; font-size: 1rem;" id="pairRateValue">
-                                1.36300
-                            </div>
+                        <div class="calc-field-row">
+                            <div class="calc-field-label" id="pairRateLabel">USDCAD:</div>
+                            <div class="calc-field-input calc-field-value" id="pairRateValue">1.36300</div>
                         </div>
                     </div>
 
                     <!-- Buttons -->
-                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2.5rem;">
-                        <button onclick="resetCalculator()" style="padding: 0.875rem 2rem; background: #6b7280; border: none; border-radius: 8px; color: #ffffff; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-                            Reset
-                        </button>
-                        <button onclick="calculatePosition()" style="padding: 0.875rem 2rem; background: #f59e0b; border: none; border-radius: 8px; color: #000000; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-                            Calculate
-                        </button>
+                    <div class="calc-buttons">
+                        <button onclick="resetCalculator()" class="calc-btn-reset">Reset</button>
+                        <button onclick="calculatePosition()" class="calc-btn-calculate">Calculate</button>
                     </div>
 
                     <!-- Results Section -->
-                    <div id="calcResults" style="display: none; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1f1f1f;">
-                        <h3 style="text-align: center; font-size: 1.25rem; font-weight: 600; color: #ffffff; margin-bottom: 1.5rem;">Results</h3>
-                        
-                        <div style="display: table; width: 100%; max-width: 500px; margin: 0 auto; border-spacing: 0 1rem;">
-                            <div style="display: table-row;">
-                                <div style="display: table-cell; padding: 0.75rem 1rem; color: #e0e0e0; font-size: 1rem;">Money, <span id="resultCurrency">USD</span></div>
-                                <div style="display: table-cell; padding: 0.75rem 1rem; text-align: right; color: #e0e0e0; font-size: 1rem;" id="resultMoney">$100</div>
+                    <div id="calcResults" style="display: none;">
+                        <h3 class="calc-results-title">Results</h3>
+                        <div class="calc-results-grid">
+                            <div class="calc-result-row">
+                                <div class="calc-result-label">Money, <span id="resultCurrency">USD</span></div>
+                                <div class="calc-result-value" id="resultMoney">$100</div>
                             </div>
-                            <div style="display: table-row;">
-                                <div style="display: table-cell; padding: 0.75rem 1rem; color: #e0e0e0; font-size: 1rem;">Units</div>
-                                <div style="display: table-cell; padding: 0.75rem 1rem; text-align: right; color: #e0e0e0; font-size: 1rem;" id="resultUnits">71,742</div>
+                            <div class="calc-result-row">
+                                <div class="calc-result-label">Units</div>
+                                <div class="calc-result-value" id="resultUnits">71,742</div>
                             </div>
-                            <div style="display: table-row;">
-                                <div style="display: table-cell; padding: 0.75rem 1rem; color: #e0e0e0; font-size: 1rem;">Sizing</div>
-                                <div style="display: table-cell; padding: 0.75rem 1rem; text-align: right; color: #e0e0e0; font-size: 1rem;" id="resultSizing">0.72 lots</div>
+                            <div class="calc-result-row">
+                                <div class="calc-result-label">Sizing</div>
+                                <div class="calc-result-value" id="resultSizing">0.72 lots</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Important Notes -->
-                <div style="margin-top: 2rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1.5rem; max-width: 900px; margin: 2rem auto 0;">
-                    <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div class="calc-notes">
+                    <div class="calc-notes-inner">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="16" x2="12" y2="12"></line>
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
-                        <div style="flex: 1;">
-                            <div style="color: #10b981; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem;">Important Notes</div>
-                            <ul style="color: #6b7280; font-size: 0.8125rem; line-height: 1.6; margin: 0; padding-left: 1.25rem;">
+                        <div>
+                            <div class="calc-notes-title">Important Notes</div>
+                            <ul class="calc-notes-list">
                                 <li><strong>Units</strong> = Total currency units to trade</li>
                                 <li><strong>Sizing</strong> = Standard lots (1 lot = 100,000 units)</li>
                                 <li>Always verify calculations with your broker</li>
@@ -3487,7 +4396,7 @@
 
             <!-- Trading Calendar -->
             <div class="journal-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div class="calendar-section-header">
                     <h3 class="journal-section-title" style="margin: 0;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -3497,13 +4406,13 @@
                         </svg>
                         Trading Calendar
                     </h3>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div class="calendar-nav">
                         <button class="icon-btn" onclick="changeMonth(-1)">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="15 18 9 12 15 6"></polyline>
                             </svg>
                         </button>
-                        <span id="calendarMonth" style="font-size: 1rem; font-weight: 600; color: #ffffff; min-width: 150px; text-align: center;"></span>
+                        <span id="calendarMonth" class="calendar-month-label"></span>
                         <button class="icon-btn" onclick="changeMonth(1)">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -3527,20 +4436,20 @@
                     Trades on [Date]
                 </h3>
 
-                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                    <div class="stat-card" style="flex: 1;">
+                <div class="day-stats-row">
+                    <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-card-label">Day P/L</span>
                         </div>
                         <div class="stat-card-value" id="selectedDayPl">$0.00</div>
                     </div>
-                    <div class="stat-card" style="flex: 1;">
+                    <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-card-label">Total Trades</span>
                         </div>
                         <div class="stat-card-value" id="selectedDayCount">0</div>
                     </div>
-                    <div class="stat-card" style="flex: 1;">
+                    <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-card-label">Win Rate</span>
                         </div>
