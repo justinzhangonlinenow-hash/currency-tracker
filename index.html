@@ -214,12 +214,7 @@
             color: #e0e0e0;
         }
 
-        .filters {
-            display: grid;
-            grid-template-columns: 2fr repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
+        /* Old .filters replaced by .filter-bar */
 
         @media (max-width: 1024px) {
             .filters {
@@ -3337,6 +3332,330 @@
                 break-inside: avoid;
             }
         }
+        /* ============================================================
+           FILTER BAR
+        ============================================================ */
+        .filter-bar {
+            margin-bottom: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+
+        .filter-bar-top {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-search {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        /* Clear X inside search */
+        .search-clear-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s;
+        }
+
+        .search-clear-btn:hover { color: #e0e0e0; }
+        .search-clear-btn.visible { display: flex; }
+
+        .filter-dropdowns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            flex: 2;
+        }
+
+        .filter-dropdowns .dropdown {
+            flex: 1;
+            min-width: 130px;
+        }
+
+        /* Active filter highlight on button */
+        .filter-btn.is-active {
+            border-color: rgba(16, 185, 129, 0.5) !important;
+            background: rgba(16, 185, 129, 0.08) !important;
+            color: #10b981;
+        }
+
+        .filter-btn.is-active .filter-btn-content {
+            color: #10b981;
+        }
+
+        /* Right-side actions */
+        .filter-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .filter-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.625rem 0.875rem;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: #1f1f1f;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-action-btn:hover {
+            background: #374151;
+            color: #e0e0e0;
+        }
+
+        /* Drag mode active state */
+        .drag-toggle-btn.active {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        /* Clear all — red tint */
+        .clear-all-btn {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+        }
+
+        .clear-all-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* ── Active filter pills ── */
+        .filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+            min-height: 0;
+        }
+
+        .filter-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.625rem 0.3rem 0.75rem;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            animation: pillIn 0.15s ease-out;
+        }
+
+        @keyframes pillIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .pill-remove {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.2);
+            border: none;
+            color: #10b981;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+
+        .pill-remove:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+
+        /* ── Drag mode banner ── */
+        .drag-mode-banner {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
+            font-size: 0.8125rem;
+            color: #10b981;
+            font-weight: 500;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .drag-mode-banner span {
+            flex: 1;
+        }
+
+        .drag-mode-banner button {
+            padding: 0.375rem 0.875rem;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 6px;
+            color: #10b981;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .drag-mode-banner button:hover {
+            background: rgba(16, 185, 129, 0.35);
+        }
+
+        /* ── Drag mode card styles ── */
+        .pairs-grid.drag-mode .pair-card {
+            cursor: grab;
+            border-color: rgba(16, 185, 129, 0.2) !important;
+        }
+
+        .pairs-grid.drag-mode .pair-card:active {
+            cursor: grabbing;
+        }
+
+        .pair-card.drag-over {
+            border-color: #10b981 !important;
+            border-style: dashed !important;
+            background: rgba(16, 185, 129, 0.05) !important;
+            transform: scale(1.01);
+        }
+
+        .pair-card.dragging {
+            opacity: 0.35;
+            transform: scale(0.97);
+        }
+
+        /* Drag handle visible in drag mode */
+        .drag-handle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            color: #4b5563;
+            cursor: grab;
+            border-radius: 6px;
+            transition: color 0.15s;
+            flex-shrink: 0;
+        }
+
+        .pairs-grid.drag-mode .drag-handle {
+            display: flex;
+        }
+
+        .drag-handle:hover { color: #10b981; }
+
+        /* ── Touch drag ghost ── */
+        .touch-drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.85;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 2px #10b981;
+            transform: rotate(1.5deg) scale(1.03);
+            transition: transform 0.1s;
+            background: #0f0f0f;
+            overflow: hidden;
+        }
+
+        /* Responsive */
+        @media (max-width: 1023px) {
+            .filter-dropdowns {
+                flex: none;
+                width: 100%;
+            }
+
+            .filter-bar-top {
+                flex-wrap: wrap;
+            }
+
+            .filter-search {
+                flex: 1 1 200px;
+            }
+
+            .filter-actions {
+                flex: none;
+            }
+        }
+
+        @media (max-width: 639px) {
+            .filter-bar-top {
+                gap: 0.5rem;
+            }
+
+            .filter-search {
+                flex: 1 1 100%;
+                order: -1;
+            }
+
+            .filter-dropdowns {
+                width: 100%;
+                gap: 0.375rem;
+            }
+
+            .filter-dropdowns .dropdown {
+                min-width: calc(50% - 0.2rem);
+                flex: 1 1 calc(50% - 0.2rem);
+            }
+
+            .filter-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .drag-mode-banner {
+                font-size: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .filter-action-btn span {
+                display: none;
+            }
+
+            .filter-action-btn {
+                padding: 0.625rem;
+            }
+
+            .filter-pill {
+                font-size: 0.625rem;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -3407,165 +3726,151 @@
 
         <!-- Monitor View -->
         <div id="monitorView">
-            <!-- Filters -->
-            <div class="filters">
-                <div class="search-box">
-                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                    <input type="text" placeholder="Search pairs..." id="searchInput" oninput="filterPairs()">
-                </div>
-                
-                <!-- Counter Trend Filter -->
-                <div class="dropdown">
-                    <button class="filter-btn" onclick="toggleDropdown('counterTrendFilter')">
-                        <div class="filter-btn-content">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                <polyline points="17 6 23 6 23 12"></polyline>
-                            </svg>
-                            <span id="counterTrendFilterText">All Trades</span>
-                        </div>
-                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
+
+            <!-- ── Filter Bar ── -->
+            <div class="filter-bar">
+
+                <!-- Row 1: search + dropdowns + actions -->
+                <div class="filter-bar-top">
+                    <!-- Search -->
+                    <div class="search-box filter-search">
+                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
                         </svg>
-                    </button>
-                    <div class="dropdown-menu" id="counterTrendFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('counterTrend', 'all', this)">
-                            All Trades
-                            <span class="checkmark">✓</span>
+                        <input type="text" placeholder="Search pairs…" id="searchInput" oninput="filterPairs()">
+                        <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" title="Clear search">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Dropdowns group -->
+                    <div class="filter-dropdowns">
+
+                        <!-- Counter Trend -->
+                        <div class="dropdown">
+                            <button class="filter-btn" id="counterTrendBtn" onclick="toggleDropdown('counterTrendFilter')">
+                                <div class="filter-btn-content">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                        <polyline points="17 6 23 6 23 12"></polyline>
+                                    </svg>
+                                    <span id="counterTrendFilterText">All Trades</span>
+                                </div>
+                                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            <div class="dropdown-menu" id="counterTrendFilter">
+                                <div class="dropdown-item selected" onclick="selectFilter('counterTrend','all',this)">All Trades<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('counterTrend','true',this)">Counter Trend<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('counterTrend','false',this)">Non-Counter Trend<span class="checkmark">✓</span></div>
+                            </div>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('counterTrend', 'true', this)">
-                            Counter Trend
-                            <span class="checkmark">✓</span>
+
+                        <!-- Stage -->
+                        <div class="dropdown">
+                            <button class="filter-btn" id="stageBtn" onclick="toggleDropdown('stageFilter')">
+                                <div class="filter-btn-content">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    </svg>
+                                    <span id="stageFilterText">All Stages</span>
+                                </div>
+                                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            <div class="dropdown-menu" id="stageFilter">
+                                <div class="dropdown-item selected" onclick="selectFilter('stage','all',this)">All Stages<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('stage','Break',this)">Break<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('stage','Pullback',this)">Pullback<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('stage','Retest',this)">Retest<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('stage','Entry',this)">Entry<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('stage','Missed',this)">Missed<span class="checkmark">✓</span></div>
+                            </div>
                         </div>
-                        <div class="dropdown-item" onclick="selectFilter('counterTrend', 'false', this)">
-                            Non-Counter Trend
-                            <span class="checkmark">✓</span>
+
+                        <!-- Timeframe -->
+                        <div class="dropdown">
+                            <button class="filter-btn" id="tfBtn" onclick="toggleDropdown('tfFilter')">
+                                <div class="filter-btn-content">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span id="tfFilterText">All Timeframes</span>
+                                </div>
+                                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            <div class="dropdown-menu" id="tfFilter">
+                                <div class="dropdown-item selected" onclick="selectFilter('tf','all',this)">All Timeframes<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('tf','MONTH',this)">Month<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('tf','WEEK',this)">Week<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('tf','DAILY',this)">Daily<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('tf','4H',this)">4H<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('tf','2H',this)">2H<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('tf','1H',this)">1H<span class="checkmark">✓</span></div>
+                            </div>
                         </div>
+
+                        <!-- Sort -->
+                        <div class="dropdown">
+                            <button class="filter-btn" id="sortBtn" onclick="toggleDropdown('sortFilter')">
+                                <div class="filter-btn-content">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="4" y1="6" x2="16" y2="6"></line>
+                                        <line x1="4" y1="12" x2="13" y2="12"></line>
+                                        <line x1="4" y1="18" x2="10" y2="18"></line>
+                                    </svg>
+                                    <span id="sortFilterText">Newest First</span>
+                                </div>
+                                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            <div class="dropdown-menu" id="sortFilter">
+                                <div class="dropdown-item selected" onclick="selectFilter('sort','newest',this)">Newest First<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('sort','oldest',this)">Oldest First<span class="checkmark">✓</span></div>
+                                <div class="dropdown-item" onclick="selectFilter('sort','manual',this)">Manual Order<span class="checkmark">✓</span></div>
+                            </div>
+                        </div>
+
+                    </div><!-- /filter-dropdowns -->
+
+                    <!-- Right side actions -->
+                    <div class="filter-actions">
+                        <!-- Drag mode toggle -->
+                        <button class="filter-action-btn drag-toggle-btn" id="dragModeBtn" onclick="toggleDragMode()" title="Toggle drag-to-reorder mode">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="5" r="1" fill="currentColor"></circle><circle cx="9" cy="12" r="1" fill="currentColor"></circle><circle cx="9" cy="19" r="1" fill="currentColor"></circle>
+                                <circle cx="15" cy="5" r="1" fill="currentColor"></circle><circle cx="15" cy="12" r="1" fill="currentColor"></circle><circle cx="15" cy="19" r="1" fill="currentColor"></circle>
+                            </svg>
+                            <span>Reorder</span>
+                        </button>
+                        <!-- Clear all filters -->
+                        <button class="filter-action-btn clear-all-btn" id="clearAllFiltersBtn" onclick="clearAllFilters()" title="Clear all filters" style="display:none">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <span>Clear All</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Stage Filter -->
-                <div class="dropdown">
-                    <button class="filter-btn" onclick="toggleDropdown('stageFilter')">
-                        <div class="filter-btn-content">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                            </svg>
-                            <span id="stageFilterText">All Stages</span>
-                        </div>
-                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="dropdown-menu" id="stageFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('stage', 'all', this)">
-                            All Stages
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Break', this)">
-                            Break
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Pullback', this)">
-                            Pullback
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Retest', this)">
-                            Retest
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Entry', this)">
-                            Entry
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('stage', 'Missed', this)">
-                            Missed
-                            <span class="checkmark">✓</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Row 2: active filter pills (shown only when filters are active) -->
+                <div class="filter-pills" id="filterPills"></div>
 
-                <!-- Timeframe Filter -->
-                <div class="dropdown">
-                    <button class="filter-btn" onclick="toggleDropdown('tfFilter')">
-                        <div class="filter-btn-content">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            <span id="tfFilterText">All Timeframes</span>
-                        </div>
-                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="dropdown-menu" id="tfFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('tf', 'all', this)">
-                            All Timeframes
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', 'MONTH', this)">
-                            Month
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', 'WEEK', this)">
-                            Week
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', 'DAILY', this)">
-                            Daily
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', '4H', this)">
-                            4H
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', '2H', this)">
-                            2H
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('tf', '1H', this)">
-                            1H
-                            <span class="checkmark">✓</span>
-                        </div>
-                    </div>
-                </div>
+            </div><!-- /filter-bar -->
 
-                <!-- Sort Filter -->
-                <div class="dropdown">
-                    <button class="filter-btn" onclick="toggleDropdown('sortFilter')">
-                        <div class="filter-btn-content">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="4" y1="6" x2="16" y2="6"></line>
-                                <line x1="4" y1="12" x2="13" y2="12"></line>
-                                <line x1="4" y1="18" x2="10" y2="18"></line>
-                            </svg>
-                            <span id="sortFilterText">Newest First</span>
-                        </div>
-                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="dropdown-menu" id="sortFilter">
-                        <div class="dropdown-item selected" onclick="selectFilter('sort', 'newest', this)">
-                            Newest First
-                            <span class="checkmark">✓</span>
-                        </div>
-                        <div class="dropdown-item" onclick="selectFilter('sort', 'oldest', this)">
-                            Oldest First
-                            <span class="checkmark">✓</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Drag mode banner -->
+            <div class="drag-mode-banner" id="dragModeBanner" style="display:none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="5" r="1" fill="currentColor"></circle><circle cx="9" cy="12" r="1" fill="currentColor"></circle><circle cx="9" cy="19" r="1" fill="currentColor"></circle>
+                    <circle cx="15" cy="5" r="1" fill="currentColor"></circle><circle cx="15" cy="12" r="1" fill="currentColor"></circle><circle cx="15" cy="19" r="1" fill="currentColor"></circle>
+                </svg>
+                <span>Drag mode active — grab any card to reorder. Order is saved automatically.</span>
+                <button onclick="toggleDragMode()">Done</button>
             </div>
 
             <!-- Pairs Grid -->
-            <div class="pairs-grid" id="pairsGrid">
-                <!-- Pairs will be rendered here -->
-            </div>
+            <div class="pairs-grid" id="pairsGrid"></div>
         </div>
 
         <!-- Register View -->
@@ -3615,6 +3920,8 @@
                                 <option value="CADCHF">CADCHF</option>
                                 <option value="CHFJPY">CHFJPY</option>
                                 <option value="NZDCHF">NZDCHF</option>
+                                <option value="NAS100USD">NAS100USD</option>
+                                <option value="SPX500USD">SPX500USD</option>
                             </select>
                         </div>
 
@@ -4099,6 +4406,8 @@
                                     <option value="USDJPY">USDJPY</option>
                                     <option value="XAGUSD">XAGUSD</option>
                                     <option value="XAUUSD">XAUUSD</option>
+                                    <option value="NAS100USD">NAS100USD</option>
+                                    <option value="SPX500USD">SPX500USD</option>
                                 </select>
                             </div>
                         </div>
@@ -4888,10 +5197,6 @@
         // Form data persistence
         let formData = {};
         
-        // Drag and drop state
-        let draggedElement = null;
-        let draggedPairId = null;
-        
         // Calendar state
         let currentCalendarDate = new Date();
         let selectedCalendarDay = null;
@@ -4908,6 +5213,147 @@
             tf: 'all',
             sort: 'newest'
         };
+
+        // Drag mode state
+        let dragModeActive = false;
+
+        // ── Filter label maps ──
+        const filterLabels = {
+            counterTrend: { all: null, 'true': 'Counter Trend', 'false': 'Non-Counter Trend' },
+            stage:        { all: null, Break: 'Break', Pullback: 'Pullback', Retest: 'Retest', Entry: 'Entry', Missed: 'Missed' },
+            tf:           { all: null, MONTH: 'Month', WEEK: 'Week', DAILY: 'Daily', '4H': '4H', '2H': '2H', '1H': '1H' },
+            sort:         { newest: null, oldest: 'Oldest First', manual: 'Manual Order' }
+        };
+
+        // Global pill-remove dispatcher (called from inline onclick with data-key)
+        function removePillFilter(key) {
+            if (key === 'search') {
+                clearSearch();
+            } else {
+                selectFilter(key, 'all', null);
+            }
+        }
+
+        // ── Render active filter pills ──
+        function renderFilterPills() {
+            const container = document.getElementById('filterPills');
+            const clearBtn  = document.getElementById('clearAllFiltersBtn');
+            if (!container) return;
+
+            const pills = [];
+
+            // Search pill
+            if (filters.search) {
+                pills.push({ key: 'search', label: '\u201c' + filters.search + '\u201d' });
+            }
+
+            // Dropdown pills
+            ['counterTrend', 'stage', 'tf', 'sort'].forEach(function(key) {
+                const val = filters[key];
+                const label = filterLabels[key] && filterLabels[key][val];
+                if (label) {
+                    pills.push({ key: key, label: label });
+                }
+            });
+
+            container.innerHTML = pills.map(function(p) {
+                return '<span class="filter-pill">'
+                    + p.label
+                    + '<button class="pill-remove" onclick="removePillFilter(\'' + p.key + '\')" title="Remove filter">'
+                    + '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">'
+                    + '<line x1="18" y1="6" x2="6" y2="18"></line>'
+                    + '<line x1="6" y1="6" x2="18" y2="18"></line>'
+                    + '</svg></button></span>';
+            }).join('');
+
+            const hasActiveFilters = pills.length > 0;
+            if (clearBtn) clearBtn.style.display = hasActiveFilters ? 'flex' : 'none';
+
+            // Highlight active dropdown buttons
+            var btnMap = { counterTrend: 'counterTrendBtn', stage: 'stageBtn', tf: 'tfBtn', sort: 'sortBtn' };
+            Object.keys(btnMap).forEach(function(key) {
+                var btn = document.getElementById(btnMap[key]);
+                if (btn) {
+                    var isActive = filters[key] !== 'all' && filters[key] !== 'newest';
+                    btn.classList.toggle('is-active', isActive);
+                }
+            });
+        }
+
+        // ── Clear single filter ──
+        function clearSearch() {
+            filters.search = '';
+            const input = document.getElementById('searchInput');
+            if (input) input.value = '';
+            const clearBtn = document.getElementById('searchClearBtn');
+            if (clearBtn) clearBtn.classList.remove('visible');
+            renderFilterPills();
+            renderPairs();
+        }
+
+        // ── Clear ALL filters ──
+        function clearAllFilters() {
+            filters = { search: '', counterTrend: 'all', stage: 'all', tf: 'all', sort: 'newest' };
+
+            // Reset search input
+            var input = document.getElementById('searchInput');
+            if (input) input.value = '';
+            var sClearBtn = document.getElementById('searchClearBtn');
+            if (sClearBtn) sClearBtn.classList.remove('visible');
+
+            // Reset all dropdown text labels
+            function setEl(id, text) { var e = document.getElementById(id); if (e) e.textContent = text; }
+            setEl('counterTrendFilterText', 'All Trades');
+            setEl('stageFilterText', 'All Stages');
+            setEl('tfFilterText', 'All Timeframes');
+            setEl('sortFilterText', 'Newest First');
+
+            // Reset dropdown selected states (first item = "All ..." in each)
+            document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                menu.querySelectorAll('.dropdown-item').forEach(function(item, i) {
+                    item.classList.toggle('selected', i === 0);
+                });
+                menu.classList.remove('active');
+            });
+
+            // Exit drag mode if active
+            if (dragModeActive) {
+                dragModeActive = false;
+                var grid = document.getElementById('pairsGrid');
+                var btn  = document.getElementById('dragModeBtn');
+                var banner = document.getElementById('dragModeBanner');
+                if (grid) grid.classList.remove('drag-mode');
+                if (btn) btn.classList.remove('active');
+                if (banner) banner.style.display = 'none';
+            }
+
+            renderFilterPills();
+            renderPairs();
+        }
+
+        // ── Toggle drag mode ──
+        function toggleDragMode() {
+            dragModeActive = !dragModeActive;
+            const grid   = document.getElementById('pairsGrid');
+            const btn    = document.getElementById('dragModeBtn');
+            const banner = document.getElementById('dragModeBanner');
+
+            grid?.classList.toggle('drag-mode', dragModeActive);
+            btn?.classList.toggle('active', dragModeActive);
+            if (banner) banner.style.display = dragModeActive ? 'flex' : 'none';
+
+            // When entering drag mode, switch to manual sort so order is preserved
+            if (dragModeActive && filters.sort !== 'manual') {
+                filters.sort = 'manual';
+                var sortText = document.getElementById('sortFilterText');
+                if (sortText) sortText.textContent = 'Manual Order';
+                // Update selected state in sort dropdown
+                var sortItems = document.querySelectorAll('#sortFilter .dropdown-item');
+                sortItems.forEach(function(item, i) { item.classList.toggle('selected', i === 2); });
+                renderFilterPills();
+                renderPairs();
+            }
+        }
 
         // Load data on page load
         window.addEventListener('DOMContentLoaded', () => {
@@ -5039,6 +5485,9 @@
 
         // Select filter option
         function selectFilter(type, value, el) {
+            // Sort filter doesn't have an 'all' value — map it to 'newest'
+            if (type === 'sort' && value === 'all') value = 'newest';
+
             filters[type] = value;
             
             const items = document.querySelectorAll(`#${type}Filter .dropdown-item`);
@@ -5057,14 +5506,20 @@
                 document.getElementById('tfFilterText').textContent = 
                     value === 'all' ? 'All Timeframes' : value;
             } else if (type === 'sort') {
-                document.getElementById('sortFilterText').textContent = 
-                    value === 'newest' ? 'Newest First' : 'Oldest First';
+                const sortLabels = { newest: 'Newest First', oldest: 'Oldest First', manual: 'Manual Order' };
+                document.getElementById('sortFilterText').textContent = sortLabels[value] || 'Newest First';
+                // If resetting sort, also mark first item selected
+                if (value === 'newest' && !el) {
+                    const firstItem = document.querySelector('#sortFilter .dropdown-item');
+                    if (firstItem) firstItem.classList.add('selected');
+                }
             }
             
             document.querySelectorAll('.dropdown-menu').forEach(d => {
                 d.classList.remove('active');
             });
-            
+
+            renderFilterPills();
             renderPairs();
         }
 
@@ -5339,13 +5794,16 @@
             } else if (filters.sort === 'oldest') {
                 filteredPairs.sort((a, b) => a.id - b.id);
             } else {
-                // Default: sort by sortOrder (for drag and drop)
+                // manual / default: sort by sortOrder
                 filteredPairs.sort((a, b) => {
                     const orderA = a.sortOrder !== undefined ? a.sortOrder : a.id;
                     const orderB = b.sortOrder !== undefined ? b.sortOrder : b.id;
                     return orderA - orderB;
                 });
             }
+
+            // Set draggable only in drag mode
+            const isDrag = dragModeActive;
 
             count.textContent = `ACTIVE PAIRS: ${pairs.length}`;
 
@@ -5374,7 +5832,14 @@
                 else if (stage === 'missed') stageClass = 'missed';
                 
                 return `
-                    <div class="pair-card" draggable="true" data-id="${pair.id}" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)">
+                    <div class="pair-card" draggable="${isDrag}" data-id="${pair.id}" 
+                         ondragstart="handleDragStart(event)" 
+                         ondragover="handleDragOver(event)" 
+                         ondrop="handleDrop(event)" 
+                         ondragend="handleDragEnd(event)"
+                         ontouchstart="handleTouchStart(event)"
+                         ontouchmove="handleTouchMove(event)"
+                         ontouchend="handleTouchEnd(event)">
                         <div class="trigger-badge-wrapper">
                             <div class="trigger-badge ${stageClass}">
                                 <div class="trigger-label">${pair.triggerTF} Trigger</div>
@@ -5383,18 +5848,26 @@
                         </div>
 
                         <div class="pair-header">
-                            <div>
-                                <div class="pair-title">
-                                    <div class="pair-name">${pair.symbol}</div>
-                                    <span class="direction-badge ${pair.direction.toLowerCase()}">${pair.direction.toUpperCase()}</span>
-                                    ${pair.counterTrend ? '<span class="counter-trend-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>Counter Trend</span>' : ''}
-                                </div>
-                                <div class="pair-meta">
+                            <div style="display:flex;align-items:center;gap:0.5rem;min-width:0;">
+                                <div class="drag-handle" title="Drag to reorder">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                        <circle cx="9" cy="5" r="1" fill="currentColor"></circle><circle cx="9" cy="12" r="1" fill="currentColor"></circle><circle cx="9" cy="19" r="1" fill="currentColor"></circle>
+                                        <circle cx="15" cy="5" r="1" fill="currentColor"></circle><circle cx="15" cy="12" r="1" fill="currentColor"></circle><circle cx="15" cy="19" r="1" fill="currentColor"></circle>
                                     </svg>
-                                    ${pair.registeredDate}
+                                </div>
+                                <div>
+                                    <div class="pair-title">
+                                        <div class="pair-name">${pair.symbol}</div>
+                                        <span class="direction-badge ${pair.direction.toLowerCase()}">${pair.direction.toUpperCase()}</span>
+                                        ${pair.counterTrend ? '<span class="counter-trend-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>Counter Trend</span>' : ''}
+                                    </div>
+                                    <div class="pair-meta">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        ${pair.registeredDate}
+                                    </div>
                                 </div>
                             </div>
                             <div class="pair-actions">
@@ -5472,82 +5945,160 @@
         // Filter pairs
         function filterPairs() {
             filters.search = document.getElementById('searchInput').value;
+            const clearBtn = document.getElementById('searchClearBtn');
+            if (clearBtn) clearBtn.classList.toggle('visible', filters.search.length > 0);
+            renderFilterPills();
             renderPairs();
         }
 
-        // ========== DRAG AND DROP FUNCTIONS ==========
+        // ========== DRAG AND DROP (MOUSE) ==========
+
+        let draggedElement = null;
+        let draggedPairId  = null;
 
         function handleDragStart(e) {
-            draggedElement = e.target;
-            draggedPairId = parseInt(e.target.dataset.id);
-            e.target.style.opacity = '0.4';
+            if (!dragModeActive) { e.preventDefault(); return; }
+            draggedElement = e.currentTarget;
+            draggedPairId  = parseInt(e.currentTarget.dataset.id);
+            e.currentTarget.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', draggedPairId);
         }
 
         function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
+            if (!dragModeActive) return;
+            e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
-            
             const target = e.target.closest('.pair-card');
             if (target && target !== draggedElement) {
-                target.style.borderColor = '#10b981';
+                // Remove from all first
+                document.querySelectorAll('.pair-card').forEach(c => c.classList.remove('drag-over'));
+                target.classList.add('drag-over');
             }
             return false;
         }
 
         function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-            
+            if (!dragModeActive) return;
+            e.stopPropagation();
             const target = e.target.closest('.pair-card');
             if (target && target !== draggedElement) {
-                target.style.borderColor = '#1f1f1f';
-                
+                target.classList.remove('drag-over');
                 const targetId = parseInt(target.dataset.id);
                 reorderPairs(draggedPairId, targetId);
             }
-            
             return false;
         }
 
         function handleDragEnd(e) {
-            e.target.style.opacity = '1';
-            
-            // Remove all hover effects
-            document.querySelectorAll('.pair-card').forEach(card => {
-                card.style.borderColor = '#1f1f1f';
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.pair-card').forEach(c => {
+                c.classList.remove('drag-over');
             });
+        }
+
+        // ========== TOUCH DRAG (MOBILE) ==========
+
+        let touchDragActive  = false;
+        let touchDragCard    = null;
+        let touchDragId      = null;
+        let touchGhost       = null;
+        let touchOffsetX     = 0;
+        let touchOffsetY     = 0;
+        let touchLastTarget  = null;
+
+        function handleTouchStart(e) {
+            if (!dragModeActive) return;
+            const card = e.currentTarget;
+            const touch = e.touches[0];
+            const rect  = card.getBoundingClientRect();
+
+            touchDragCard = card;
+            touchDragId   = parseInt(card.dataset.id);
+            touchOffsetX  = touch.clientX - rect.left;
+            touchOffsetY  = touch.clientY - rect.top;
+            touchDragActive = false; // wait for move to confirm drag
+
+            // Clone card as ghost
+            touchGhost = card.cloneNode(true);
+            touchGhost.className = 'touch-drag-ghost';
+            touchGhost.style.width  = rect.width + 'px';
+            touchGhost.style.height = rect.height + 'px';
+            touchGhost.style.left   = touch.clientX - touchOffsetX + 'px';
+            touchGhost.style.top    = touch.clientY - touchOffsetY + window.scrollY + 'px';
+            document.body.appendChild(touchGhost);
+        }
+
+        function handleTouchMove(e) {
+            if (!dragModeActive || !touchGhost) return;
+            e.preventDefault();
+            touchDragActive = true;
+
+            const touch = e.touches[0];
+            touchGhost.style.left = touch.clientX - touchOffsetX + 'px';
+            touchGhost.style.top  = touch.clientY - touchOffsetY + window.scrollY + 'px';
+
+            touchDragCard.classList.add('dragging');
+
+            // Find card under finger
+            touchGhost.style.display = 'none';
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            touchGhost.style.display = '';
+            const overCard = el?.closest('.pair-card');
+
+            if (overCard && overCard !== touchDragCard) {
+                if (touchLastTarget && touchLastTarget !== overCard) {
+                    touchLastTarget.classList.remove('drag-over');
+                }
+                overCard.classList.add('drag-over');
+                touchLastTarget = overCard;
+            } else if (!overCard && touchLastTarget) {
+                touchLastTarget.classList.remove('drag-over');
+                touchLastTarget = null;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!dragModeActive) return;
+
+            // Clean up ghost
+            if (touchGhost) { touchGhost.remove(); touchGhost = null; }
+            if (touchDragCard) touchDragCard.classList.remove('dragging');
+            if (touchLastTarget) touchLastTarget.classList.remove('drag-over');
+
+            if (touchDragActive && touchLastTarget) {
+                const targetId = parseInt(touchLastTarget.dataset.id);
+                reorderPairs(touchDragId, targetId);
+            }
+
+            touchDragActive = false;
+            touchDragCard   = null;
+            touchLastTarget = null;
         }
 
         async function reorderPairs(draggedId, targetId) {
             const draggedIndex = pairs.findIndex(p => p.id === draggedId);
-            const targetIndex = pairs.findIndex(p => p.id === targetId);
-            
+            const targetIndex  = pairs.findIndex(p => p.id === targetId);
             if (draggedIndex === -1 || targetIndex === -1) return;
-            
-            // Remove dragged item
+
             const [draggedPair] = pairs.splice(draggedIndex, 1);
-            
-            // Insert at new position
             pairs.splice(targetIndex, 0, draggedPair);
-            
-            // Update sortOrder for all pairs
-            pairs.forEach((pair, index) => {
-                pair.sortOrder = index;
-            });
-            
-            // Save all pairs back to database
-            try {
-                for (const pair of pairs) {
-                    await updatePairInDB(pair);
-                }
-                renderPairs();
-            } catch (error) {
-                // Silent error handling
+
+            pairs.forEach((pair, index) => { pair.sortOrder = index; });
+
+            // Ensure manual sort is active
+            if (filters.sort !== 'manual') {
+                filters.sort = 'manual';
+                const el = document.getElementById('sortFilterText');
+                if (el) el.textContent = 'Manual Order';
             }
+
+            renderPairs();
+            renderFilterPills();
+
+            try {
+                for (const pair of pairs) await updatePairInDB(pair);
+            } catch (error) { /* silent */ }
         }
 
         async function updatePairInDB(pair) {
@@ -6771,6 +7322,8 @@ TO SYNC TO ANOTHER DEVICE:
             'LTCUSD': 105.00,
             'NZDCAD': 0.8175,
             'NZDCHF': 0.5330,
+            'NAS100USD': 24700.00,
+            'SPX500USD': 6850.00,
             'NZDJPY': 90.01,
             'NZDUSD': 0.6020,
             'USDCAD': 1.36300,  // Updated to match myfxbook screenshot
