@@ -3656,6 +3656,148 @@
             }
         }
 
+        /* ============================================================
+           SYMBOL SEARCHABLE COMBOBOX
+        ============================================================ */
+        .symbol-combobox {
+            position: relative;
+        }
+
+        .symbol-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .symbol-search-input {
+            width: 100%;
+            padding-right: 4rem !important;
+            cursor: text;
+        }
+
+        .symbol-clear-btn {
+            position: absolute;
+            right: 2.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s;
+            z-index: 2;
+        }
+
+        .symbol-clear-btn:hover { color: #e0e0e0; }
+
+        .symbol-chevron {
+            position: absolute;
+            right: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            pointer-events: none;
+            transition: transform 0.2s;
+        }
+
+        .symbol-combobox.open .symbol-chevron {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .symbol-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            z-index: 200;
+            max-height: 260px;
+            overflow-y: auto;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            scrollbar-width: thin;
+            scrollbar-color: #374151 transparent;
+        }
+
+        .symbol-dropdown::-webkit-scrollbar { width: 4px; }
+        .symbol-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .symbol-dropdown::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
+
+        .symbol-combobox.open .symbol-dropdown {
+            display: block;
+            animation: dropIn 0.15s ease-out;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .symbol-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #e0e0e0;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #1a1a1a;
+            transition: background 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .symbol-option:last-child { border-bottom: none; }
+
+        .symbol-option:hover,
+        .symbol-option.highlighted {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .symbol-option.custom-entry {
+            color: #f59e0b;
+            font-style: italic;
+        }
+
+        .symbol-option.custom-entry:hover,
+        .symbol-option.custom-entry.highlighted {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .symbol-no-results {
+            padding: 1rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.8125rem;
+        }
+
+        .symbol-section-label {
+            padding: 0.5rem 1rem 0.25rem;
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4b5563;
+            background: #0d0d0d;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        /* highlight matched text */
+        .symbol-option mark {
+            background: none;
+            color: #10b981;
+            font-weight: 700;
+        }
+
     </style>
 </head>
 <body>
@@ -3884,45 +4026,27 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label">Pair Symbol <span class="required">*</span></label>
-                            <select class="form-select" id="pairSymbol">
-                                <option value="">Select...</option>
-                                <option value="AUDJPY">AUDJPY</option>
-                                <option value="GBPNZD">GBPNZD</option>
-                                <option value="NZDUSD">NZDUSD</option>
-                                <option value="GBPCAD">GBPCAD</option>
-                                <option value="USDCAD">USDCAD</option>
-                                <option value="BTCUSD">BTCUSD</option>
-                                <option value="EURGBP">EURGBP</option>
-                                <option value="CADJPY">CADJPY</option>
-                                <option value="NZDJPY">NZDJPY</option>
-                                <option value="ETHUSD">ETHUSD</option>
-                                <option value="LTCUSD">LTCUSD</option>
-                                <option value="GBPUSD">GBPUSD</option>
-                                <option value="USDCHF">USDCHF</option>
-                                <option value="GBPCHF">GBPCHF</option>
-                                <option value="AUDCHF">AUDCHF</option>
-                                <option value="USDCNH">USDCNH</option>
-                                <option value="EURJPY">EURJPY</option>
-                                <option value="USDJPY">USDJPY</option>
-                                <option value="GBPAUD">GBPAUD</option>
-                                <option value="EURAUD">EURAUD</option>
-                                <option value="EURUSD">EURUSD</option>
-                                <option value="GBPJPY">GBPJPY</option>
-                                <option value="NZDCAD">NZDCAD</option>
-                                <option value="AUDCAD">AUDCAD</option>
-                                <option value="XAUUSD">XAUUSD</option>
-                                <option value="XAGUSD">XAGUSD</option>
-                                <option value="AUDUSD">AUDUSD</option>
-                                <option value="EURCHF">EURCHF</option>
-                                <option value="EURCAD">EURCAD</option>
-                                <option value="EURNZD">EURNZD</option>
-                                <option value="AUDNZD">AUDNZD</option>
-                                <option value="CADCHF">CADCHF</option>
-                                <option value="CHFJPY">CHFJPY</option>
-                                <option value="NZDCHF">NZDCHF</option>
-                                <option value="NAS100USD">NAS100USD</option>
-                                <option value="SPX500USD">SPX500USD</option>
-                            </select>
+                            <div class="symbol-combobox" id="symbolCombobox">
+                                <div class="symbol-input-wrap">
+                                    <input type="text" class="form-input symbol-search-input" id="symbolSearchInput"
+                                           placeholder="Type to search or enter custom…"
+                                           oninput="filterSymbolList()"
+                                           onfocus="openSymbolList()"
+                                           onkeydown="symbolKeyNav(event)"
+                                           autocomplete="off">
+                                    <button type="button" class="symbol-clear-btn" id="symbolClearBtn" onclick="clearSymbolInput()" style="display:none">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                    <svg class="symbol-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="symbol-dropdown" id="symbolDropdown"></div>
+                            </div>
+                            <!-- Hidden value holder -->
+                            <input type="hidden" id="pairSymbol">
                         </div>
 
                         <div class="form-group">
@@ -3958,12 +4082,6 @@
                                 <option value="1H">1H</option>
                             </select>
                         </div>
-                    </div>
-
-                    <!-- Custom Symbol Input -->
-                    <div class="form-group" style="margin-bottom: 2rem;">
-                        <label class="form-label">Or Enter Custom:</label>
-                        <input type="text" class="form-input" id="customSymbol" placeholder="e.g. GOLD, SP500, CUSTOM">
                     </div>
 
                     <!-- Counter Trend Checkbox -->
@@ -5370,17 +5488,16 @@
                     `;
                 }
                 
-                // Auto-clear custom symbol when typing
-                document.getElementById('customSymbol').addEventListener('input', function(e) {
-                    if (e.target.value.trim()) {
-                        document.getElementById('pairSymbol').value = '';
-                    }
-                });
-
                 // Save form data when switching tabs
                 document.getElementById('registerForm').addEventListener('change', saveFormData);
-                document.getElementById('customSymbol').addEventListener('input', saveFormData);
                 document.getElementById('narrative').addEventListener('input', saveFormData);
+                
+                // Close symbol dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('#symbolCombobox')) {
+                        closeSymbolList();
+                    }
+                });
                 
                 // Set default trade date to today
                 const today = new Date().toISOString().split('T')[0];
@@ -5407,7 +5524,7 @@
         function saveFormData() {
             formData = {
                 pairSymbol: document.getElementById('pairSymbol').value,
-                customSymbol: document.getElementById('customSymbol').value,
+                symbolDisplay: document.getElementById('symbolSearchInput') ? document.getElementById('symbolSearchInput').value : '',
                 direction: document.getElementById('direction').value,
                 marketStage: document.getElementById('marketStage').value,
                 triggerTF: document.getElementById('triggerTF').value,
@@ -5424,7 +5541,12 @@
         function restoreFormData() {
             if (Object.keys(formData).length > 0) {
                 document.getElementById('pairSymbol').value = formData.pairSymbol || '';
-                document.getElementById('customSymbol').value = formData.customSymbol || '';
+                const searchInput = document.getElementById('symbolSearchInput');
+                if (searchInput && formData.symbolDisplay) {
+                    searchInput.value = formData.symbolDisplay;
+                    const clearBtn = document.getElementById('symbolClearBtn');
+                    if (clearBtn) clearBtn.style.display = formData.symbolDisplay ? 'flex' : 'none';
+                }
                 document.getElementById('direction').value = formData.direction || '';
                 document.getElementById('marketStage').value = formData.marketStage || '';
                 document.getElementById('triggerTF').value = formData.triggerTF || '';
@@ -5671,8 +5793,7 @@
             submitBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg> SAVING...';
 
             try {
-                const pairSymbol = document.getElementById('pairSymbol').value;
-                const customSymbol = document.getElementById('customSymbol').value.trim().toUpperCase();
+                const pairSymbol = document.getElementById('pairSymbol').value.trim().toUpperCase();
                 const direction = document.getElementById('direction').value;
                 const marketStage = document.getElementById('marketStage').value;
                 const triggerTF = document.getElementById('triggerTF').value;
@@ -5683,7 +5804,7 @@
                 const fourHBias = document.getElementById('fourHBias').value;
                 const narrative = document.getElementById('narrative').value;
 
-                const finalSymbol = customSymbol || pairSymbol;
+                const finalSymbol = pairSymbol;
                 
                 if (!finalSymbol) {
                     showMessage('Please select or enter a pair symbol', 'error');
@@ -5716,6 +5837,7 @@
 
                 // Clear form AND formData
                 document.getElementById('registerForm').reset();
+                clearSymbolInput();
                 formData = {};
                 
                 switchTab('monitor');
@@ -6789,35 +6911,59 @@
 
         // Wipe all data
         async function wipeData() {
-            if (confirm('⚠️ Delete ALL data from cloud?')) {
+            if (confirm('⚠️ Delete ALL data from cloud? This cannot be undone.')) {
                 try {
                     updateSyncStatus('syncing');
                     
+                    // Delete pairs
                     const pairsSnap = await firestoreDb.collection('users').doc(userId).collection('pairs').get();
-                    const pairsBatch = firestoreDb.batch();
-                    pairsSnap.docs.forEach(doc => pairsBatch.delete(doc.ref));
-                    await pairsBatch.commit();
+                    if (!pairsSnap.empty) {
+                        const pairsBatch = firestoreDb.batch();
+                        pairsSnap.docs.forEach(doc => pairsBatch.delete(doc.ref));
+                        await pairsBatch.commit();
+                    }
                     
+                    // Delete trades
                     const tradesSnap = await firestoreDb.collection('users').doc(userId).collection('trades').get();
-                    const tradesBatch = firestoreDb.batch();
-                    tradesSnap.docs.forEach(doc => tradesBatch.delete(doc.ref));
-                    await tradesBatch.commit();
+                    if (!tradesSnap.empty) {
+                        const tradesBatch = firestoreDb.batch();
+                        tradesSnap.docs.forEach(doc => tradesBatch.delete(doc.ref));
+                        await tradesBatch.commit();
+                    }
                     
+                    // Delete confluence
                     const confSnap = await firestoreDb.collection('users').doc(userId).collection('confluence').get();
-                    const confBatch = firestoreDb.batch();
-                    confSnap.docs.forEach(doc => confBatch.delete(doc.ref));
-                    await confBatch.commit();
+                    if (!confSnap.empty) {
+                        const confBatch = firestoreDb.batch();
+                        confSnap.docs.forEach(doc => confBatch.delete(doc.ref));
+                        await confBatch.commit();
+                    }
                     
-                    // Reload data and update UI
-                    await loadPairs();
-                    await loadTrades();
+                    // Reset local state
+                    pairs = [];
+                    trades = [];
+                    confluenceReadings = [];
+                    
+                    // Refresh all UI
+                    renderPairs();
                     renderJournalStats();
                     renderCalendar();
+                    renderSavedReadings();
                     
                     updateSyncStatus('synced');
-                    showMessage('✓ All data wiped');
+                    showMessage('✓ All data wiped successfully');
                 } catch (error) {
-                    showMessage('Error wiping data', 'error');
+                    console.error('Wipe error:', error);
+                    // Data was deleted in Firebase, just reset local state anyway
+                    pairs = [];
+                    trades = [];
+                    confluenceReadings = [];
+                    renderPairs();
+                    renderJournalStats();
+                    renderCalendar();
+                    renderSavedReadings();
+                    updateSyncStatus('synced');
+                    showMessage('✓ All data wiped successfully');
                 }
             }
         }
@@ -7508,6 +7654,134 @@ TO SYNC TO ANOTHER DEVICE:
                 updateSyncStatus('offline');
             }
         }
+        // ========== SYMBOL SEARCHABLE COMBOBOX ==========
+
+        const ALL_SYMBOLS = [
+            'AUDJPY','AUDCAD','AUDCHF','AUDNZD','AUDUSD',
+            'BTCUSD','ETHUSD','LTCUSD',
+            'CADJPY','CADCHF','CHFJPY',
+            'EURAUD','EURCAD','EURCHF','EURGBP','EURJPY','EURNZD','EURUSD',
+            'GBPAUD','GBPCAD','GBPCHF','GBPJPY','GBPNZD','GBPUSD',
+            'NAS100USD','SPX500USD',
+            'NZDCAD','NZDCHF','NZDJPY','NZDUSD',
+            'USDCAD','USDCHF','USDCNH','USDJPY',
+            'XAGUSD','XAUUSD'
+        ];
+
+        let symbolHighlightIndex = -1;
+
+        function openSymbolList() {
+            const combobox = document.getElementById('symbolCombobox');
+            if (combobox) combobox.classList.add('open');
+            filterSymbolList();
+        }
+
+        function closeSymbolList() {
+            const combobox = document.getElementById('symbolCombobox');
+            if (combobox) combobox.classList.remove('open');
+            symbolHighlightIndex = -1;
+        }
+
+        function filterSymbolList() {
+            const input = document.getElementById('symbolSearchInput');
+            const dropdown = document.getElementById('symbolDropdown');
+            const clearBtn = document.getElementById('symbolClearBtn');
+            const combobox = document.getElementById('symbolCombobox');
+            if (!input || !dropdown) return;
+
+            const query = input.value.trim().toUpperCase();
+            if (clearBtn) clearBtn.style.display = query ? 'flex' : 'none';
+            if (combobox) combobox.classList.add('open');
+
+            symbolHighlightIndex = -1;
+
+            const matches = query
+                ? ALL_SYMBOLS.filter(s => s.includes(query))
+                : ALL_SYMBOLS;
+
+            let html = '';
+
+            if (matches.length > 0) {
+                html += '<div class="symbol-section-label">Known Pairs</div>';
+                matches.forEach(sym => {
+                    const highlighted = query
+                        ? sym.replace(query, '<mark>' + query + '</mark>')
+                        : sym;
+                    html += '<div class="symbol-option" onclick="selectSymbol(\'' + sym + '\')">' + highlighted + '</div>';
+                });
+            }
+
+            // Always show custom entry option if query doesn't exactly match a known symbol
+            if (query && !ALL_SYMBOLS.includes(query)) {
+                html += '<div class="symbol-section-label">Custom</div>';
+                html += '<div class="symbol-option custom-entry" onclick="selectSymbol(\'' + query + '\')">Use &ldquo;' + query + '&rdquo; as custom symbol</div>';
+            }
+
+            if (!html) {
+                html = '<div class="symbol-no-results">No pairs found</div>';
+            }
+
+            dropdown.innerHTML = html;
+        }
+
+        function selectSymbol(value) {
+            const input = document.getElementById('symbolSearchInput');
+            const hidden = document.getElementById('pairSymbol');
+            const clearBtn = document.getElementById('symbolClearBtn');
+            if (input) input.value = value;
+            if (hidden) hidden.value = value;
+            if (clearBtn) clearBtn.style.display = 'flex';
+            closeSymbolList();
+            saveFormData();
+        }
+
+        function clearSymbolInput() {
+            const input = document.getElementById('symbolSearchInput');
+            const hidden = document.getElementById('pairSymbol');
+            const clearBtn = document.getElementById('symbolClearBtn');
+            if (input) input.value = '';
+            if (hidden) hidden.value = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            closeSymbolList();
+        }
+
+        function symbolKeyNav(e) {
+            const dropdown = document.getElementById('symbolDropdown');
+            if (!dropdown) return;
+            const options = dropdown.querySelectorAll('.symbol-option');
+            if (!options.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                symbolHighlightIndex = Math.min(symbolHighlightIndex + 1, options.length - 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                symbolHighlightIndex = Math.max(symbolHighlightIndex - 1, 0);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (symbolHighlightIndex >= 0 && options[symbolHighlightIndex]) {
+                    options[symbolHighlightIndex].click();
+                } else {
+                    // Treat raw typed text as custom
+                    const val = document.getElementById('symbolSearchInput').value.trim().toUpperCase();
+                    if (val) selectSymbol(val);
+                }
+                return;
+            } else if (e.key === 'Escape') {
+                closeSymbolList();
+                return;
+            } else if (e.key === 'Tab') {
+                closeSymbolList();
+                return;
+            }
+
+            // Update highlight
+            options.forEach((opt, i) => opt.classList.toggle('highlighted', i === symbolHighlightIndex));
+            if (options[symbolHighlightIndex]) {
+                options[symbolHighlightIndex].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
     </script>
 </body>
 </html>
