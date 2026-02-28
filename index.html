@@ -31,14 +31,24 @@
         .header {
             background: #0a0a0a;
             border-bottom: 1px solid #1f1f1f;
-            padding: 1.5rem 2rem;
+            padding: 1rem 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
+        }
+
+        .header-inner {
+            width: 100%;
+            max-width: 1440px;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
         .logo-section {
@@ -188,10 +198,17 @@
             padding: 0.5rem;
             border-radius: 12px;
             border: 1px solid #1f1f1f;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .tab {
-            padding: 0.875rem 2.5rem;
+            padding: 0.875rem 2rem;
             border-radius: 8px;
             background: transparent;
             border: none;
@@ -202,6 +219,8 @@
             transition: all 0.2s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tab.active {
@@ -361,6 +380,7 @@
         .pairs-grid {
             display: grid;
             gap: 1.5rem;
+            grid-template-columns: 1fr;
         }
 
         .pair-card {
@@ -859,22 +879,22 @@
         /* ========== CONFLUENCE CALCULATOR STYLES ========== */
         
         .confluence-container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
         }
 
         .confluence-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.5rem;
         }
 
         .conf-summary-card {
             background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
             border: 2px solid #1f1f1f;
-            border-radius: 20px;
-            padding: 2rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             text-align: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -904,11 +924,11 @@
         }
 
         .conf-summary-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #6b7280;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.625rem;
             font-weight: 600;
         }
 
@@ -928,6 +948,9 @@
             padding: 3rem;
             text-align: center;
             margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
             position: relative;
             overflow: hidden;
         }
@@ -985,6 +1008,7 @@
             padding: 2rem;
             margin-bottom: 2rem;
             transition: all 0.3s;
+            width: 100%;
         }
 
         .conf-section:hover {
@@ -1448,7 +1472,7 @@
         /* Trading Journal Styles */
         .journal-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
             gap: 1rem;
             margin-bottom: 2rem;
         }
@@ -1457,8 +1481,9 @@
             background: #0a0a0a;
             border: 1px solid #1f1f1f;
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
             transition: all 0.2s;
+            min-width: 0;
         }
 
         .stat-card:hover {
@@ -2068,8 +2093,9 @@
             border: 1px solid #1f1f1f;
             border-radius: 16px;
             padding: clamp(1.5rem, 4vw, 3rem);
-            max-width: 900px;
+            max-width: 860px;
             margin: 0 auto 2rem;
+            width: 100%;
         }
 
         .calc-card-title {
@@ -2351,14 +2377,17 @@
 
         /* ---------- Container fluid scaling ---------- */
         .container {
-            padding: clamp(1rem, 3vw, 2.5rem);
-            max-width: 1600px;
+            padding: clamp(1rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 3rem);
+            max-width: 1440px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
         }
 
         /* ---------- Ultra-wide (≥1536px) ---------- */
         @media (min-width: 1536px) {
             .container {
-                max-width: 1600px;
+                max-width: 1440px;
                 padding: 2.5rem 3rem;
             }
 
@@ -2373,6 +2402,7 @@
             .confluence-summary {
                 grid-template-columns: repeat(5, 1fr);
             }
+
         }
 
         /* ---------- Large desktop (1280–1535px) ---------- */
@@ -2383,6 +2413,10 @@
 
             .journal-stats {
                 grid-template-columns: repeat(3, 1fr);
+            }
+
+            .confluence-summary {
+                grid-template-columns: repeat(5, 1fr);
             }
         }
 
@@ -2395,13 +2429,25 @@
             .bias-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+
+            .confluence-summary {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .journal-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         /* ---------- Tablet & below (< 1024px) ---------- */
         @media (max-width: 1023px) {
             /* Header responsive */
             .header {
-                padding: 0.875rem 1.25rem;
+                padding: 0.75rem 0;
+            }
+
+            .header-inner {
+                padding: 0 1.25rem;
                 gap: 0.75rem;
                 flex-wrap: wrap;
             }
@@ -2462,6 +2508,12 @@
             .confluence-container {
                 max-width: 100%;
             }
+
+            /* Confluence summary 3-col on tablet */
+            .confluence-summary {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.875rem;
+            }
         }
 
         /* ---------- Tablet portrait (640–1023px) ---------- */
@@ -2511,8 +2563,13 @@
 
             /* === HEADER === */
             .header {
-                padding: 0.75rem 1rem;
+                padding: 0.625rem 0;
+            }
+
+            .header-inner {
+                padding: 0 1rem;
                 gap: 0.5rem;
+                flex-wrap: wrap;
             }
 
             .logo-section {
@@ -3209,7 +3266,7 @@
             }
 
             .confluence-summary {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 0.5rem;
             }
 
@@ -3798,11 +3855,466 @@
             font-weight: 700;
         }
 
-    </style>
+    
+        /* ============================================================
+           POSITION CALCULATOR — REDESIGN
+           ============================================================ */
+
+        .pcalc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pcalc-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pcalc-header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .pcalc-title {
+            font-size: 1.625rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.25px;
+        }
+
+        .pcalc-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Two-column layout */
+        .pcalc-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* Shared panel base */
+        .pcalc-inputs-panel,
+        .pcalc-results-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .pcalc-inputs-panel {
+            background: linear-gradient(135deg, #0f0f0f 0%, #0a0a0a 100%);
+            border: 1px solid #1f1f1f;
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .pcalc-section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Fields */
+        .pcalc-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .pcalc-field-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .pcalc-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pcalc-input,
+        .pcalc-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .pcalc-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+            cursor: pointer;
+        }
+
+        .pcalc-input:focus,
+        .pcalc-select:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.04);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .pcalc-input::placeholder {
+            color: #4b5563;
+        }
+
+        /* Live rate display */
+        .pcalc-rate-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1rem;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 10px;
+        }
+
+        .pcalc-rate-label {
+            font-size: 0.8125rem;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .pcalc-rate-value {
+            font-size: 1rem;
+            color: #10b981;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Action buttons */
+        .pcalc-actions {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .pcalc-btn-reset {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.9375rem 1rem;
+            background: #1f1f1f;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pcalc-btn-reset:hover {
+            background: #374151;
+            color: #e0e0e0;
+        }
+
+        .pcalc-btn-calculate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.9375rem 1rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pcalc-btn-calculate:hover {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+        }
+
+        /* Right panel: Results card */
+        .pcalc-results-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .pcalc-result-primary {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.06));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 14px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .pcalc-result-primary .pcalc-result-metric-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .pcalc-result-primary .pcalc-result-metric-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pcalc-result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .pcalc-result-metric {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 1.125rem 1.25rem;
+        }
+
+        .pcalc-result-metric-label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+        }
+
+        .pcalc-result-metric-value {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: #10b981;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pcalc-save-row {
+            display: flex;
+            gap: 0.625rem;
+        }
+
+        .pcalc-save-row .pcalc-input {
+            flex: 1;
+            font-size: 0.8125rem;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .pcalc-btn-save {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.75rem 1.125rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .pcalc-btn-save:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Empty state */
+        .pcalc-empty-results {
+            background: #0a0a0a;
+            border: 1px dashed #2a2a2a;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #4b5563;
+        }
+
+        .pcalc-empty-results svg {
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        .pcalc-empty-results p {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .pcalc-empty-results strong {
+            color: #6b7280;
+        }
+
+        /* Saved positions */
+        .pcalc-saved-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #0a0a0a 100%);
+            border: 1px solid #1f1f1f;
+            border-radius: 20px;
+            padding: 1.75rem;
+        }
+
+        .pcalc-saved-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .pcalc-saved-count {
+            font-size: 0.75rem;
+            color: #6b7280;
+            background: #1f1f1f;
+            padding: 0.25rem 0.625rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .pcalc-saved-empty {
+            text-align: center;
+            padding: 1.5rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+
+        /* Notes */
+        .pcalc-notes {
+            display: flex;
+            gap: 0.875rem;
+            padding: 1.25rem;
+            background: rgba(16, 185, 129, 0.06);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 12px;
+        }
+
+        .pcalc-notes-icon {
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        .pcalc-notes-title {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pcalc-notes-list {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            line-height: 1.7;
+            padding-left: 1.125rem;
+            margin: 0;
+        }
+
+        .pcalc-notes-list strong {
+            color: #9ca3af;
+        }
+
+        /* Responsive: tablet - stack columns */
+        @media (max-width: 1023px) {
+            .pcalc-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 639px) {
+            .pcalc-header-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+            }
+            .pcalc-title {
+                font-size: 1.25rem;
+            }
+            .pcalc-inputs-panel {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+            .pcalc-field-row-2 {
+                grid-template-columns: 1fr;
+            }
+            .pcalc-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+            .pcalc-result-primary .pcalc-result-metric-value {
+                font-size: 2rem;
+            }
+            .pcalc-result-metric-value {
+                font-size: 1.125rem;
+            }
+            .pcalc-results-card,
+            .pcalc-saved-card {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+            .pcalc-save-row {
+                flex-direction: column;
+            }
+            .pcalc-btn-save {
+                width: 100%;
+                justify-content: center;
+                padding: 0.875rem;
+            }
+        }
+
+        /* END POSITION CALCULATOR REDESIGN */
+
+        </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
+        <div class="header-inner">
         <div class="logo-section">
             <div class="logo-icon">▦</div>
             <div class="logo-text">
@@ -3843,6 +4355,7 @@
                 <span class="live-dot" id="syncDot"></span>
                 <span id="syncStatus">SYNCED</span>
             </div>
+        </div>
         </div>
     </header>
 
@@ -4466,176 +4979,186 @@
 
         <!-- Position Size Calculator View -->
         <div id="calculatorView" style="display: none;">
-            <div class="confluence-container">
-                <div class="section-header" style="margin-bottom: 2rem;">
-                    <h2 class="section-title-main" style="font-size: 1.75rem; font-weight: 700; color: #ffffff;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.75rem;">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
+
+            <!-- Page Header -->
+            <div class="pcalc-header">
+                <div class="pcalc-header-left">
+                    <div class="pcalc-header-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
                         </svg>
-                        POSITION SIZE CALCULATOR
-                    </h2>
-                    <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">Calculate position size based on account balance and risk</p>
+                    </div>
+                    <div>
+                        <h2 class="pcalc-title">Position Size Calculator</h2>
+                        <p class="pcalc-subtitle">Calculate position size based on account balance and risk</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-column layout -->
+            <div class="pcalc-layout">
+
+                <!-- LEFT: Inputs -->
+                <div class="pcalc-inputs-panel">
+                    <div class="pcalc-section-label">Configuration</div>
+
+                    <div class="pcalc-field-group">
+                        <label class="pcalc-label">Currency Pair</label>
+                        <select class="pcalc-select" id="calcCurrencyPair" onchange="calculatePosition()">
+                            <option value="AUDJPY">AUDJPY</option>
+                            <option value="AUDCAD">AUDCAD</option>
+                            <option value="AUDCHF">AUDCHF</option>
+                            <option value="AUDNZD">AUDNZD</option>
+                            <option value="AUDUSD">AUDUSD</option>
+                            <option value="BTCUSD">BTCUSD</option>
+                            <option value="CADJPY">CADJPY</option>
+                            <option value="CADCHF">CADCHF</option>
+                            <option value="CHFJPY">CHFJPY</option>
+                            <option value="EURAUD">EURAUD</option>
+                            <option value="EURCAD">EURCAD</option>
+                            <option value="EURCHF">EURCHF</option>
+                            <option value="EURGBP">EURGBP</option>
+                            <option value="EURJPY">EURJPY</option>
+                            <option value="EURNZD">EURNZD</option>
+                            <option value="EURUSD">EURUSD</option>
+                            <option value="ETHUSD">ETHUSD</option>
+                            <option value="GBPAUD">GBPAUD</option>
+                            <option value="GBPCAD">GBPCAD</option>
+                            <option value="GBPCHF">GBPCHF</option>
+                            <option value="GBPJPY">GBPJPY</option>
+                            <option value="GBPNZD">GBPNZD</option>
+                            <option value="GBPUSD">GBPUSD</option>
+                            <option value="LTCUSD">LTCUSD</option>
+                            <option value="NZDCAD">NZDCAD</option>
+                            <option value="NZDCHF">NZDCHF</option>
+                            <option value="NZDJPY">NZDJPY</option>
+                            <option value="NZDUSD">NZDUSD</option>
+                            <option value="USDCAD" selected>USDCAD</option>
+                            <option value="USDCHF">USDCHF</option>
+                            <option value="USDCNH">USDCNH</option>
+                            <option value="USDJPY">USDJPY</option>
+                            <option value="XAGUSD">XAGUSD</option>
+                            <option value="XAUUSD">XAUUSD</option>
+                            <option value="NAS100USD">NAS100USD</option>
+                            <option value="SPX500USD">SPX500USD</option>
+                        </select>
+                    </div>
+
+                    <div class="pcalc-field-group">
+                        <label class="pcalc-label">Account Currency</label>
+                        <select class="pcalc-select" id="calcAccountCurrency" onchange="calculatePosition()">
+                            <option value="USD" selected>USD — US Dollar</option>
+                            <option value="EUR">EUR — Euro</option>
+                            <option value="GBP">GBP — British Pound</option>
+                            <option value="JPY">JPY — Japanese Yen</option>
+                            <option value="CAD">CAD — Canadian Dollar</option>
+                            <option value="AUD">AUD — Australian Dollar</option>
+                            <option value="CHF">CHF — Swiss Franc</option>
+                            <option value="NZD">NZD — New Zealand Dollar</option>
+                        </select>
+                    </div>
+
+                    <div class="pcalc-field-row-2">
+                        <div class="pcalc-field-group">
+                            <label class="pcalc-label">Account Size</label>
+                            <input type="text" class="pcalc-input" id="calcAccountBalance" placeholder="10,000" oninput="formatAccountSize(this); calculatePosition();">
+                        </div>
+                        <div class="pcalc-field-group">
+                            <label class="pcalc-label">Risk Ratio %</label>
+                            <input type="number" class="pcalc-input" id="calcRiskRatio" placeholder="1.0" step="0.1" min="0.1" max="100" oninput="calculatePosition()">
+                        </div>
+                    </div>
+
+                    <div class="pcalc-field-row-2">
+                        <div class="pcalc-field-group">
+                            <label class="pcalc-label">Stop-Loss (Pips)</label>
+                            <input type="number" class="pcalc-input" id="calcStopLoss" placeholder="50" step="1" min="1" oninput="calculatePosition()">
+                        </div>
+                        <div class="pcalc-field-group">
+                            <label class="pcalc-label">Trade Size (Lots)</label>
+                            <input type="text" class="pcalc-input" id="calcTradeSize" placeholder="100,000" value="1" readonly style="background:rgba(0,0,0,0.6); cursor:not-allowed; color:#6b7280;">
+                        </div>
+                    </div>
+
+                    <div class="pcalc-rate-row">
+                        <span class="pcalc-rate-label" id="pairRateLabel">USDCAD Rate:</span>
+                        <span class="pcalc-rate-value" id="pairRateValue">1.36300</span>
+                    </div>
+
+                    <div class="pcalc-actions">
+                        <button onclick="resetCalculator()" class="pcalc-btn-reset">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-3.53"></path></svg>
+                            Reset
+                        </button>
+                        <button onclick="calculatePosition()" class="pcalc-btn-calculate">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                            Calculate
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Calculator Card -->
-                <div class="calc-card">
-                    <h3 class="calc-card-title">Values</h3>
-                    
-                    <!-- Input Grid -->
-                    <div class="calc-fields">
-                        <div class="calc-field-row">
-                            <div class="calc-field-label">Currency Pair:</div>
-                            <div class="calc-field-input">
-                                <select class="form-select" id="calcCurrencyPair" onchange="calculatePosition()">
-                                    <option value="AUDJPY">AUDJPY</option>
-                                    <option value="AUDCAD">AUDCAD</option>
-                                    <option value="AUDCHF">AUDCHF</option>
-                                    <option value="AUDNZD">AUDNZD</option>
-                                    <option value="AUDUSD">AUDUSD</option>
-                                    <option value="BTCUSD">BTCUSD</option>
-                                    <option value="CADJPY">CADJPY</option>
-                                    <option value="CADCHF">CADCHF</option>
-                                    <option value="CHFJPY">CHFJPY</option>
-                                    <option value="EURAUD">EURAUD</option>
-                                    <option value="EURCAD">EURCAD</option>
-                                    <option value="EURCHF">EURCHF</option>
-                                    <option value="EURGBP">EURGBP</option>
-                                    <option value="EURJPY">EURJPY</option>
-                                    <option value="EURNZD">EURNZD</option>
-                                    <option value="EURUSD">EURUSD</option>
-                                    <option value="ETHUSD">ETHUSD</option>
-                                    <option value="GBPAUD">GBPAUD</option>
-                                    <option value="GBPCAD">GBPCAD</option>
-                                    <option value="GBPCHF">GBPCHF</option>
-                                    <option value="GBPJPY">GBPJPY</option>
-                                    <option value="GBPNZD">GBPNZD</option>
-                                    <option value="GBPUSD">GBPUSD</option>
-                                    <option value="LTCUSD">LTCUSD</option>
-                                    <option value="NZDCAD">NZDCAD</option>
-                                    <option value="NZDCHF">NZDCHF</option>
-                                    <option value="NZDJPY">NZDJPY</option>
-                                    <option value="NZDUSD">NZDUSD</option>
-                                    <option value="USDCAD" selected>USDCAD</option>
-                                    <option value="USDCHF">USDCHF</option>
-                                    <option value="USDCNH">USDCNH</option>
-                                    <option value="USDJPY">USDJPY</option>
-                                    <option value="XAGUSD">XAGUSD</option>
-                                    <option value="XAUUSD">XAUUSD</option>
-                                    <option value="NAS100USD">NAS100USD</option>
-                                    <option value="SPX500USD">SPX500USD</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="calc-field-row">
-                            <div class="calc-field-label">Account Currency:</div>
-                            <div class="calc-field-input">
-                                <select class="form-select" id="calcAccountCurrency" onchange="calculatePosition()">
-                                    <option value="USD" selected>USD</option>
-                                    <option value="EUR">EUR</option>
-                                    <option value="GBP">GBP</option>
-                                    <option value="JPY">JPY</option>
-                                    <option value="CAD">CAD</option>
-                                    <option value="AUD">AUD</option>
-                                    <option value="CHF">CHF</option>
-                                    <option value="NZD">NZD</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="calc-field-row">
-                            <div class="calc-field-label">Account Size:</div>
-                            <div class="calc-field-input">
-                                <input type="text" class="form-input" id="calcAccountBalance" placeholder="10,000" value="" oninput="formatAccountSize(this); calculatePosition();">
-                            </div>
-                        </div>
-                        <div class="calc-field-row">
-                            <div class="calc-field-label">Risk Ratio, %:</div>
-                            <div class="calc-field-input">
-                                <input type="number" class="form-input" id="calcRiskRatio" placeholder="1" value="" step="0.1" min="0.1" max="100" oninput="calculatePosition()">
-                            </div>
-                        </div>
-                        <div class="calc-field-row">
-                            <div class="calc-field-label">Stop-Loss, Pips:</div>
-                            <div class="calc-field-input">
-                                <input type="number" class="form-input" id="calcStopLoss" placeholder="50" value="" step="1" min="1" oninput="calculatePosition()">
-                            </div>
-                        </div>
-                        <div class="calc-field-row">
-                            <div class="calc-field-label">Trade Size (<span style="text-decoration:underline">Lots</span>):</div>
-                            <div class="calc-field-input">
-                                <input type="text" class="form-input" id="calcTradeSize" placeholder="100,000" value="1" readonly style="background:#000; cursor:not-allowed;">
-                            </div>
-                        </div>
-                        <div class="calc-field-row">
-                            <div class="calc-field-label" id="pairRateLabel">USDCAD:</div>
-                            <div class="calc-field-input calc-field-value" id="pairRateValue">1.36300</div>
-                        </div>
-                    </div>
+                <!-- RIGHT: Results + Saved -->
+                <div class="pcalc-results-panel">
 
-                    <!-- Buttons -->
-                    <div class="calc-buttons">
-                        <button onclick="resetCalculator()" class="calc-btn-reset">Reset</button>
-                        <button onclick="calculatePosition()" class="calc-btn-calculate">Calculate</button>
-                    </div>
+                    <!-- Results Card -->
+                    <div class="pcalc-results-card" id="calcResults" style="display:none;">
+                        <div class="pcalc-section-label">Results</div>
 
-                    <!-- Results Section -->
-                    <div id="calcResults" style="display: none;">
-                        <h3 class="calc-results-title">Results</h3>
-                        <div class="calc-results-grid">
-                            <div class="calc-result-row">
-                                <div class="calc-result-label">Money, <span id="resultCurrency">USD</span></div>
-                                <div class="calc-result-value" id="resultMoney">$100</div>
+                        <div class="pcalc-result-metric pcalc-result-primary">
+                            <div class="pcalc-result-metric-label">Risk Amount (<span id="resultCurrency">USD</span>)</div>
+                            <div class="pcalc-result-metric-value" id="resultMoney">$100.00</div>
+                        </div>
+
+                        <div class="pcalc-result-grid">
+                            <div class="pcalc-result-metric">
+                                <div class="pcalc-result-metric-label">Units</div>
+                                <div class="pcalc-result-metric-value" id="resultUnits">71,742</div>
                             </div>
-                            <div class="calc-result-row">
-                                <div class="calc-result-label">Units</div>
-                                <div class="calc-result-value" id="resultUnits">71,742</div>
-                            </div>
-                            <div class="calc-result-row">
-                                <div class="calc-result-label">Sizing</div>
-                                <div class="calc-result-value" id="resultSizing">0.72 lots</div>
+                            <div class="pcalc-result-metric">
+                                <div class="pcalc-result-metric-label">Lot Size</div>
+                                <div class="pcalc-result-metric-value" id="resultSizing">0.72 lots</div>
                             </div>
                         </div>
-                        <!-- Save Position Button -->
-                        <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; align-items: center;">
-                            <input type="text" id="savePositionLabel" class="form-input" placeholder="Label (e.g. EURUSD Long Setup)" style="flex:1; font-size: 0.8125rem;">
-                            <button onclick="savePosition()" class="calc-btn-calculate" style="white-space:nowrap; padding: 0.75rem 1.25rem; font-size: 0.8125rem; display:flex; align-items:center; gap:0.5rem;">
+
+                        <div class="pcalc-save-row">
+                            <input type="text" id="savePositionLabel" class="pcalc-input" placeholder="Label this setup (e.g. EURUSD Long)">
+                            <button onclick="savePosition()" class="pcalc-btn-save">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                                 Save
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Saved Positions -->
-                <div class="calc-card" id="savedPositionsCard" style="margin-top: 1.5rem;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 1.25rem;">
-                        <h3 class="calc-card-title" style="margin-bottom:0;">Saved Positions</h3>
-                        <span id="savedPositionsCount" style="font-size:0.75rem; color:#6b7280; background:#1f1f1f; padding:0.25rem 0.625rem; border-radius:20px;">0 saved</span>
+                    <!-- Empty state when no results -->
+                    <div class="pcalc-empty-results" id="calcResultsEmpty">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        <p>Fill in the fields on the left and click <strong>Calculate</strong> to see your position size.</p>
                     </div>
-                    <div id="savedPositionsList">
-                        <div style="text-align:center; padding: 2rem; color: #4b5563; font-size:0.875rem;">
-                            No saved positions yet. Calculate a position and click <strong style="color:#6b7280">Save</strong>.
+
+                    <!-- Saved Positions -->
+                    <div class="pcalc-saved-card" id="savedPositionsCard">
+                        <div class="pcalc-saved-header">
+                            <div class="pcalc-section-label" style="margin-bottom:0;">Saved Positions</div>
+                            <span id="savedPositionsCount" class="pcalc-saved-count">0 saved</span>
+                        </div>
+                        <div id="savedPositionsList">
+                            <div class="pcalc-saved-empty">No saved positions yet.</div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Important Notes -->
-                <div class="calc-notes">
-                    <div class="calc-notes-inner">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="flex-shrink: 0; margin-top: 0.125rem;">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <div>
-                            <div class="calc-notes-title">Important Notes</div>
-                            <ul class="calc-notes-list">
+                    <!-- Important Notes -->
+                    <div class="pcalc-notes">
+                        <div class="pcalc-notes-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        <div class="pcalc-notes-body">
+                            <div class="pcalc-notes-title">Notes</div>
+                            <ul class="pcalc-notes-list">
                                 <li><strong>Units</strong> = Total currency units to trade</li>
                                 <li><strong>Sizing</strong> = Standard lots (1 lot = 100,000 units)</li>
                                 <li>Always verify calculations with your broker</li>
-                                <li>Risk management: 1-2% per trade recommended</li>
+                                <li>Recommended risk: 1–2% per trade</li>
                             </ul>
                         </div>
                     </div>
@@ -6401,7 +6924,7 @@
             const losses = dayTrades.filter(t => t.result === 'Loss').length;
             const winRate = dayTrades.length > 0 ? (wins / dayTrades.length) * 100 : 0;
             
-            plEl.textContent = `$${dayPl.toFixed(2)}`;
+            plEl.textContent = `$${dayPl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             plEl.style.color = dayPl >= 0 ? '#10b981' : '#ef4444';
             countEl.textContent = dayTrades.length;
             winRateEl.textContent = `${winRate.toFixed(0)}%`;
@@ -6429,7 +6952,7 @@
                                     <div class="trade-pair-name">${trade.pair}</div>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <div class="trade-result-badge ${resultClass}">${trade.result} ${trade.pl >= 0 ? '+' : ''}$${trade.pl.toFixed(2)}</div>
+                                    <div class="trade-result-badge ${resultClass}">${trade.result} ${trade.pl >= 0 ? '+' : ''}$${trade.pl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                                     <button class="icon-btn" onclick='editTrade(${JSON.stringify(trade).replace(/'/g, "&apos;")})' title="Edit trade">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -6717,7 +7240,7 @@
             // Total P/L
             const totalPlEl = document.getElementById('totalPl');
             const totalPlIconEl = document.getElementById('totalPlIcon');
-            totalPlEl.textContent = `$${stats.totalPl.toFixed(2)}`;
+            totalPlEl.textContent = `$${stats.totalPl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             totalPlEl.style.color = stats.totalPl >= 0 ? '#10b981' : '#ef4444';
             
             if (stats.totalPl >= 0) {
@@ -6733,11 +7256,11 @@
             document.getElementById('winLoss').textContent = `${stats.wins}W / ${stats.losses}L`;
 
             // Total Profit
-            document.getElementById('totalProfit').textContent = `$${stats.totalWins.toFixed(2)}`;
+            document.getElementById('totalProfit').textContent = `$${stats.totalWins.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('winCount').textContent = `${stats.wins} winning trades`;
 
             // Total Loss
-            document.getElementById('totalLoss').textContent = `$${stats.totalLosses.toFixed(2)}`;
+            document.getElementById('totalLoss').textContent = `$${stats.totalLosses.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('lossCount').textContent = `${stats.losses} losing trades`;
 
             // Profit Factor
@@ -6860,7 +7383,7 @@
                         <div class="calendar-day-number">${day}</div>
                     </div>
                     ${dayTrades.length > 0 ? `
-                        <div class="${plClass}">$${dayPl.toFixed(2)}</div>
+                        <div class="${plClass}">$${dayPl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                         <div class="calendar-day-info">${dayTrades.length} Trade${dayTrades.length > 1 ? 's' : ''}</div>
                         ${tags.length > 0 ? `
                             <div class="calendar-day-tags">
@@ -6880,7 +7403,7 @@
                     else if (weekPl < 0) weekPlClass += ' negative';
                     
                     html += `<div class="calendar-week-total">
-                        <div class="${weekPlClass}">$${weekPl.toFixed(2)}</div>
+                        <div class="${weekPlClass}">$${weekPl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                         <div class="calendar-week-trades">${weekTrades.length} Trades</div>
                     </div>`;
                     
